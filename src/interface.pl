@@ -29,7 +29,8 @@ display_border :-
     write(' ------- ------- ------- ------- -------').
 
 display_player(Player) :-
-    write('Player '),
+    nl,
+    write(' Player: '),
     write(Player),
     nl, nl.
 
@@ -53,8 +54,6 @@ display_board([Head|Tail]) :-
     display_row(Head),
     display_board(Tail).
 
-% para correr, por ex: board_end(X),display_game(X,'1').
-
 display_game(_board, _current_player) :-
     nl,
     display_border,
@@ -62,12 +61,31 @@ display_game(_board, _current_player) :-
     display_board(_board),
     display_player(_current_player),
     nl.
-    %display_border,
-    %nl,
-    %display_board(_middle_board),
-    %display_player(_current_player),
-    %nl,
-    %display_border,
-    %nl,  
-    %display_board(_final_board),
-    %display_player(_current_player).
+
+mainMenu(Choice) :-
+    printMainMenu,
+    getChar(Char),
+    (
+        Char = '1' -> Choice = 1;
+		Char = '2' -> Choice = 2;
+		Char = '3' -> halt;
+		nl,
+		write('Invalid input. Try again.'), nl,
+		pressEnter, nl,
+		mainMenu(Choice)
+).
+
+printMainMenu :-
+    clearScreen,
+    write(' ------- ------- ------- ------- ------- '),nl,
+    write('|                                       |'),nl,
+    write('| Nudge                                 |'),nl,
+    write('|                                       |'),nl,
+    write('| 1. Start Game                         |'),nl,
+    write('| 2. Help                               |'),nl,
+    write('| 3. Exit                               |'),nl,
+    write('|                                       |'),nl,
+    write('|                                       |'),nl,
+    write('| Choose an option:                     |'),nl,
+    write(' ------- ------- ------- ------- ------- '),nl,
+    nl, nl.
