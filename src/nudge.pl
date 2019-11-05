@@ -1,8 +1,8 @@
-% to run, for instance:
-    % board_end(_Var), display_game(_Var, 'player').
+% to run, 'nudge.'
 
 :- include('interface.pl').
 :- include('utilities.pl').
+%:- include('validateInput.pl').
 
 nudge :-
     mainMenu(Choice),

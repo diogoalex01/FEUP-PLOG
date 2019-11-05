@@ -26,7 +26,7 @@ board_end(
 ]).
 
 display_border :-
-    write(' ------- ------- ------- ------- -------').
+    write(' ----- ------- ------- ------- ------- -------').
 
 display_player(Player) :-
     nl,
@@ -35,12 +35,11 @@ display_player(Player) :-
     nl, nl.
 
 display_cell(Cell) :-
-    write('| '),
     write(Cell),
+    write(' |'),
     write(' ').
 
 display_row([]) :-
-    write('|'),
     nl,
     display_border,
     nl.
@@ -50,15 +49,19 @@ display_row([Head|Tail]) :-
     display_row(Tail).
 
 display_board([]).
-display_board([Head|Tail]) :-
+display_board([Head|Tail], N) :-
+    write('|  a  | '),
     display_row(Head),
-    display_board(Tail).
+    N1 is N + 1,
+    display_board(Tail, N1).
 
 display_game(_board, _current_player) :-
     nl,
+    write('       ------- ------- ------- ------- -------\n'),
+    write('      |   A   -   B   -   C   -   D   -   E   |\n'),
     display_border,
     nl,
-    display_board(_board),
+    display_board(_board, 1),
     display_player(_current_player),
     nl.
 
