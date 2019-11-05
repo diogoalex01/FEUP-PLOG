@@ -48,9 +48,9 @@ display_row([Head|Tail]) :-
     display_cell(Head),
     display_row(Tail).
 
-display_board([]).
+display_board([], _).
 display_board([Head|Tail], N) :-
-    write('|  a  | '),
+    format('|  ~D  | ', [N]),
     display_row(Head),
     N1 is N + 1,
     display_board(Tail, N1).
@@ -69,26 +69,27 @@ mainMenu(Choice) :-
     printMainMenu,
     getChar(Char),
     (
-        Char = '1' -> Choice = 1;
-		Char = '2' -> Choice = 2;
+        Char = '1' -> Choice = 1
+        ;
+		Char = '2' -> Choice = 2
+        ;
 		Char = '3' -> halt;
 		nl,
-		write('Invalid input. Try again.'), nl,
+		write('Invalid input. Try again.\n'),
 		pressEnter, nl,
 		mainMenu(Choice)
 ).
 
 printMainMenu :-
     clearScreen,
-    write(' ------- ------- ------- ------- ------- '),nl,
-    write('|                                       |'),nl,
-    write('| Nudge                                 |'),nl,
-    write('|                                       |'),nl,
-    write('| 1. Start Game                         |'),nl,
-    write('| 2. Help                               |'),nl,
-    write('| 3. Exit                               |'),nl,
-    write('|                                       |'),nl,
-    write('|                                       |'),nl,
-    write('| Choose an option:                     |'),nl,
-    write(' ------- ------- ------- ------- ------- '),nl,
-    nl, nl.
+    write(' ------- ------- ------- ------- ------- \n'),
+    write('|                                       |\n'),
+    write('| Nudge                                 |\n'),
+    write('|                                       |\n'),
+    write('| 1. Start Game                         |\n'),
+    write('| 2. Help                               |\n'),
+    write('| 3. Exit                               |\n'),
+    write('|                                       |\n'),
+    write('|                                       |\n'),
+    write('| Choose an option:                     |\n'),
+    write(' ------- ------- ------- ------- ------- \n\n\n').

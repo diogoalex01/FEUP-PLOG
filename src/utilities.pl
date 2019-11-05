@@ -6,5 +6,5 @@ getChar(Input) :-
   get_char(_).
 
 pressEnter :-
-  write('Press <ENTER> to continue.'), nl, nl,
+  write('Press <ENTER> to continue.\n\n'),
   get_char(_).

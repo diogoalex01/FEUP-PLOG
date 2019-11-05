@@ -7,6 +7,6 @@
 nudge :-
     mainMenu(Choice),
     (
-        Choice = 1 -> board_end(_Var),
+        Choice = 1 -> board_beg(_Var),
                 display_game(_Var, '1')
     ).
