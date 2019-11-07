@@ -1,25 +1,25 @@
 setPeca(Linha, Coluna, Peca, TabIn, TabOut) :-
-    setNaLinha(Linha, Coluna, Peca, TabIn, TabOut).
+    setNaLinha(Coluna, Linha, Peca, TabIn, TabOut).
 
 setNaLinha(1, Coluna, Peca, [Linha|Mais], [NovaLinha|Mais]) :-
     setNaColuna(Coluna, Peca, Linha, NovaLinha).
 
-setNaLinha(N, Coluna,Peca,[Linha|Resto], [Linha|NovoResto]) :-
+setNaLinha(N, Coluna, Peca, [Linha|Resto], [Linha|NovoResto]) :-
     N > 1,
     Next is N - 1,
-    setNaLinha(Next, coluna, Peca, Resto, NovoResto).
+    setNaLinha(Next, Coluna, Peca, Resto, NovoResto).
 
-setNaColuna(Linha, 1, Peca, [_|Mais], [Peca|Mais]).
+setNaColuna(1, _Linha, Peca, [_Y|Mais], [Peca|Mais]).
 
-setNaColuna(Linha, N, Peca, [X|Resto], [X|NovoResto]) :-
+setNaColuna(N, Linha, Peca, [X|Resto], [X|NovoResto]) :-
     N > 1,
     Next is N - 1,
-    setNaColuna(Linha, Next, Peca, Resto, NovoResto).
+    setNaColuna(Next, Linha, Peca, Resto, NovoResto).
 
 move(Board) :-
     repeat,
-    once(readColumn(Col)),
-    once(readRow(Row)),
-    checkFreePosition(Row, Col, '   ', Board),
-    setPeca(Row, Col, Board, NewBoard),
-    display_board(Board, 1).
+    once(readColumn(_Col)),
+    once(readRow(_Row)),
+    checkFreePosition(3, 3, '   ', Board),
+    setPeca(3, 3, 'w', Board, NewBoard),
+    display_board(NewBoard, '1').

@@ -1,18 +1,19 @@
-readColumn(NewColumn) :-
+readColumn :-
     repeat,
     inputColumn(NewColumn),
     validateColumnInput(NewColumn).
 
-readRow(NewRow) :-
+readRow :-
     inputRow(NewRow),
     validateRowInput(NewRow).
 
 inputRow(NewRow) :-
     write('Row: '),
-    read(Row).
+    read(NewRow).
 
 inputColumn(NewColumn) :-
-    write('Column : '),
+
+    repeat,    write('Column : '),
     read(NewColumn).
 
 validateRowInput('A').
@@ -27,41 +28,39 @@ validateRowInput('E').
 
 validateRowInput(NewRow) :-
     write('Invalid Row!\n'),
-    InputRow(_Row),
-    validateRowInput(_Row, NewRow).
+    fail,
+    inputRow(NewRow),
+    validateRowInput(NewRow).
 
 validateColumnInput(NewColumn) :-
     (
-    NewColumn <= 5, NewColumn >= 1
-    ;
-    write('Invalid Column\n'), fail
+        NewColumn =< 5,
+        NewColumn >= 1
+        ;
+        write('Invalid Column!\n'),
+        fail
 ).
 
 checkFreePosition(Linha,Coluna,Peca,TabIn) :-
     setNaLinha(Linha, Coluna, Peca, TabIn).
 
-setNaLinha(1, Coluna, Peca, [Linha|Mais]) :-
+setNaLinha(1, Coluna, Peca, [Linha|_Mais]) :-
     setNaColuna(Coluna, Peca, Linha).
 
-setNaLinha(N, Coluna,Peca,[Linha|Resto]) :-
+setNaLinha(N, Coluna, Peca, [_Linha|Resto]) :-
     N > 1,
     Next is N - 1,
-    setNaLinha(Next, coluna, Peca, Resto).
+    setNaLinha(Next, Coluna, Peca, Resto).
 
-setNaColuna(Linha, 1, Peca, [Blank|Mais]) :-
+setNaColuna(1, _Linha, Peca, [Blank|_Mais]) :-
     (
-    Peca = Blank
-    ;
-    write('Invalid Position\n'), fail
+        Peca = Blank
+        ;
+        write('Invalid Position!\n'),
+        fail
 ).
 
-setNaColuna(Linha, N, Peca, [X|Resto]) :-
+setNaColuna(N, Linha, Peca, [_X|Resto]) :-
     N > 1,
     Next is N - 1,
-    setNaColuna(Linha, Next Peca, Resto).
-
-moveType(Type) :-repeat,
-    write('You want to move two or one piece? \'s\' or \'d\' (Single or Double):'),
-    once(le_numero(Type)),
-    it((Type \== 52, Type \== 67),
-    (write('Invalid input!'), nl, fail)).
+    setNaColuna(Next, Linha, Peca, Resto).

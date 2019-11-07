@@ -71,13 +71,15 @@ mainMenu(Choice) :-
     (
         Char = '1' -> Choice = 1
         ;
-		Char = '2' -> Choice = 2
+        Char = '2' -> Choice = 2
         ;
-		Char = '3' -> halt;
-		nl,
-		write('Invalid input. Try again.\n'),
-		pressEnter, nl,
-		mainMenu(Choice)
+        Char = '3' -> halt
+        ;
+        nl,
+        write('Invalid input. Try again.\n'),
+        pressEnter,
+        nl,
+        mainMenu(Choice)
 ).
 
 printMainMenu :-
