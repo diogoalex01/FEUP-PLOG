@@ -1,7 +1,5 @@
-readColumn :-
-    repeat,
-    inputColumn(NewColumn),
-    validateColumnInput(NewColumn).
+% row validation
+% ------------------------
 
 readRow :-
     inputRow(NewRow),
@@ -11,56 +9,62 @@ inputRow(NewRow) :-
     write('Row: '),
     read(NewRow).
 
-inputColumn(NewColumn) :-
+validateRowInput(NewRow) :-
+    (
+        NewRow =< 5,
+        NewRow >= 1
+        ;
+        write('\nInvalid Row!\n\n'),
+        fail
+).
 
-    repeat,    write('Column : '),
+% column validation
+% ------------------------
+
+readColumn :-
+    inputColumn(NewColumn),
+    validateColumnInput(NewColumn).
+
+inputColumn(NewColumn) :-
+    write('Column: '),
     read(NewColumn).
 
-validateRowInput('A').
-
-validateRowInput('B').
-
-validateRowInput('C').
-
-validateRowInput('D').
-
-validateRowInput('E').
-
-validateRowInput(NewRow) :-
-    write('Invalid Row!\n'),
-    fail,
-    inputRow(NewRow),
-    validateRowInput(NewRow).
+validateColumnInput('A').
+validateColumnInput('B').
+validateColumnInput('C').
+validateColumnInput('D').
+validateColumnInput('E').
 
 validateColumnInput(NewColumn) :-
+    write('\nInvalid Column!\n\n'),
+    inputColumn(NewColumn),
+    validateColumnInput(NewColumn).
+
+% empty postition
+% ------------------------
+
+checkEmptyPosition(Row, Column, Piece, TabIn) :-
+    getRow(Row, Column, Piece, TabIn).
+
+getRow(1, Column, Piece, [Row|_More]) :-
+    getColumn(Column, Row, Piece).
+
+getRow(N, Column, Piece, [_Row|Remnant]) :-
+    N > 1,
+    Next is N - 1,
+    getRow(Next, Column, Piece, Remnant).
+
+% ------------
+
+getColumn(1, [Blank|_More], Piece) :-
     (
-        NewColumn =< 5,
-        NewColumn >= 1
+        Piece == Blank
         ;
-        write('Invalid Column!\n'),
+        write('\nInvalid Position!\n\n'),
         fail
 ).
 
-checkFreePosition(Linha,Coluna,Peca,TabIn) :-
-    setNaLinha(Linha, Coluna, Peca, TabIn).
-
-setNaLinha(1, Coluna, Peca, [Linha|_Mais]) :-
-    setNaColuna(Coluna, Peca, Linha).
-
-setNaLinha(N, Coluna, Peca, [_Linha|Resto]) :-
+getColumn(N, [_X|Remnant], Piece) :-
     N > 1,
     Next is N - 1,
-    setNaLinha(Next, Coluna, Peca, Resto).
-
-setNaColuna(1, _Linha, Peca, [Blank|_Mais]) :-
-    (
-        Peca = Blank
-        ;
-        write('Invalid Position!\n'),
-        fail
-).
-
-setNaColuna(N, Linha, Peca, [_X|Resto]) :-
-    N > 1,
-    Next is N - 1,
-    setNaColuna(Next, Linha, Peca, Resto).
+    getColumn(Next, Remnant, Piece).

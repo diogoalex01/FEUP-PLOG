@@ -11,4 +11,4 @@ nudge :-
         Choice = 1 -> board_beg(_Var),
                 display_game(_Var, '1'),
                 move(_Var)
-    ).
+).

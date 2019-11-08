@@ -61,12 +61,13 @@ display_game(_board, _current_player) :-
     write('      |   A   -   B   -   C   -   D   -   E   |\n'),
     display_border,
     nl,
-    display_board(_board, 1),
+    display_board(_board, 1), % 1 - starting row number
     display_player(_current_player),
     nl.
 
 mainMenu(Choice) :-
     printMainMenu,
+    write('Option: '),
     getChar(Char),
     (
         Char = '1' -> Choice = 1

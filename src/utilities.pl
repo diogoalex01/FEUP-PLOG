@@ -8,3 +8,4 @@ getChar(Input) :-
 pressEnter :-
   write('Press <ENTER> to continue.\n\n'),
   get_char(_).
+  

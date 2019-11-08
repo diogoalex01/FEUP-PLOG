@@ -1,25 +1,33 @@
-setPeca(Linha, Coluna, Peca, TabIn, TabOut) :-
-    setNaLinha(Coluna, Linha, Peca, TabIn, TabOut).
+setPiece(Row, Column, Piece, TabIn, TabOut) :-
+    setRow(Row, Column, Piece, TabIn, TabOut).
 
-setNaLinha(1, Coluna, Peca, [Linha|Mais], [NovaLinha|Mais]) :-
-    setNaColuna(Coluna, Peca, Linha, NovaLinha).
+% rows
+% ------------------------
 
-setNaLinha(N, Coluna, Peca, [Linha|Resto], [Linha|NovoResto]) :-
+setRow(1, Column, Piece, [Row|More], [NovaRow|More]) :-
+    setColumn(Column, Piece, Row, NovaRow).
+
+setRow(N, Column, Piece, [Row|Remnant], [Row|NewRemnant]) :-
     N > 1,
     Next is N - 1,
-    setNaLinha(Next, Coluna, Peca, Resto, NovoResto).
+    setRow(Next, Column, Piece, Remnant, NewRemnant).
 
-setNaColuna(1, _Linha, Peca, [_Y|Mais], [Peca|Mais]).
+% columns
+% ------------------------
 
-setNaColuna(N, Linha, Peca, [X|Resto], [X|NovoResto]) :-
+setColumn(1, Piece, [_|More], [Piece|More]).
+
+setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
     N > 1,
     Next is N - 1,
-    setNaColuna(Next, Linha, Peca, Resto, NovoResto).
+    setColumn(Next, Piece, Remnant, NewRemnant).
+
+% ------------------------
 
 move(Board) :-
     repeat,
-    once(readColumn(_Col)),
-    once(readRow(_Row)),
-    checkFreePosition(3, 3, '   ', Board),
-    setPeca(3, 3, 'w', Board, NewBoard),
-    display_board(NewBoard, '1').
+    once(readRow),
+    once(readColumn),
+    checkEmptyPosition(5, 2, '     ', Board),
+    setPiece(3, 3, white, Board, NewBoard),
+    display_game(NewBoard, '1').
