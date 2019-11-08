@@ -1,18 +1,21 @@
 % row validation
 % ------------------------
 
-readRow :-
-    inputRow(NewRow),
-    validateRowInput(NewRow).
+readRow(BRow, NRow) :-
+    write('Current Row'),
+    inputRow(BRow),
+    validateRowInput(BRow),
+    write('New Row'),
+    inputRow(NRow),
+    validateRowInput(NRow).
 
-inputRow(NewRow) :-
-    write('Row: '),
-    read(NewRow).
+inputRow(Row) :-
+    read(Row).
 
-validateRowInput(NewRow) :-
+validateRowInput(Row) :-
     (
-        NewRow =< 5,
-        NewRow >= 1
+        Row =< 5,
+        Row >= 1
         ;
         write('\nInvalid Row!\n\n'),
         fail
@@ -21,21 +24,35 @@ validateRowInput(NewRow) :-
 % column validation
 % ------------------------
 
-readColumn :-
-    inputColumn(NewColumn),
-    validateColumnInput(NewColumn).
+readColumn(BColumn, NColumn) :-
+    write('\nCurrent Column'),
+    inputColumn(Column),
+    validateColumnInput(Column, BColumn),
+    write('New Column'),
+    inputColumn(Column),
+    nl,
+    validateColumnInput(Column, NColumn).
 
-inputColumn(NewColumn) :-
-    write('Column: '),
-    read(NewColumn).
+inputColumn(Column) :-
+    read(Column).
 
-validateColumnInput('A').
-validateColumnInput('B').
-validateColumnInput('C').
-validateColumnInput('D').
-validateColumnInput('E').
+validateColumnInput('A', NewColumn) :-
+    write('\n A! \n\n'),
+    NewColumn = 1.
+validateColumnInput('B', NewColumn) :-
+    write('\n B! \n\n'),
+    NewColumn = 2.
+validateColumnInput('C', NewColumn) :-
+    write('\n C! \n\n'),
+    NewColumn = 3.
+validateColumnInput('D', NewColumn) :-
+    write('\n D! \n\n'),
+    NewColumn = 4.
+validateColumnInput('E', NewColumn) :-
+    write('\n E! \n\n'),
+    NewColumn = 5.
 
-validateColumnInput(NewColumn) :-
+validateColumnInput(_Column, NewColumn) :-
     write('\nInvalid Column!\n\n'),
     inputColumn(NewColumn),
     validateColumnInput(NewColumn).
@@ -43,7 +60,7 @@ validateColumnInput(NewColumn) :-
 % empty postition
 % ------------------------
 
-checkEmptyPosition(Row, Column, Piece, TabIn) :-
+checkPosition(Row, Column, Piece, TabIn) :-
     getRow(Row, Column, Piece, TabIn).
 
 getRow(1, Column, Piece, [Row|_More]) :-

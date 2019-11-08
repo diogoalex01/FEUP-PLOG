@@ -26,8 +26,18 @@ setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
 
 move(Board) :-
     repeat,
-    once(readRow),
-    once(readColumn),
-    checkEmptyPosition(5, 2, '     ', Board),
-    setPiece(3, 3, white, Board, NewBoard),
-    display_game(NewBoard, '1').
+    once(readRow(Row, NRow)),
+    once(readColumn(Column, NColumn)),
+    checkPosition(Row, Column, 'white', Board),
+    setPiece(Row, Column, '     ', Board, NewBoard),
+    checkPosition(NRow, NColumn, '     ', Board),
+    setPiece(Row, Column, white, Board, NewBoard),
+    display_game(NewBoard, '1 :'),
+
+    once(readRow(Row, NRow)),
+    once(readColumn(Column, NColumn)),
+    checkPosition(Row, Column, 'black', Board),
+    setPiece(Row, Column, '     ', Board, NewBoard),
+    checkPosition(NRow, NColumn, '     ', Board),
+    setPiece(Row, Column, black, Board, NewBoard),
+    display_game(NewBoard, '2 :').
