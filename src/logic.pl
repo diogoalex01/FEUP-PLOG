@@ -24,20 +24,33 @@ setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
 
 % ------------------------
 
-move(Board) :-
-    repeat,
-    once(readRow(Row, NRow)),
-    once(readColumn(Column, NColumn)),
-    checkPosition(Row, Column, 'white', Board),
-    setPiece(Row, Column, '     ', Board, NewBoard),
-    checkPosition(NRow, NColumn, '     ', Board),
-    setPiece(Row, Column, white, Board, NewBoard),
-    display_game(NewBoard, '1 :'),
+game(Board, Player1, Player2) :-
+    whiteTurn(Board, MidBoard, Player2),
+    blackTurn(MidBoard, FinalBoard, Player1),
+    game(FinalBoard, Player1, Player2).
 
-    once(readRow(Row, NRow)),
-    once(readColumn(Column, NColumn)),
-    checkPosition(Row, Column, 'black', Board),
-    setPiece(Row, Column, '     ', Board, NewBoard),
+
+whiteTurn(Board, FinalBoard, Player2) :-
+    repeat,
+    once(readRow(CRow, 'Current')),
+    once(readColumn(CColumn, 'Current')),
+    checkPosition(CRow, CColumn, white, Board),
+    once(readRow(NRow, 'New')),
+    once(readColumn(NColumn, 'New')),
     checkPosition(NRow, NColumn, '     ', Board),
-    setPiece(Row, Column, black, Board, NewBoard),
-    display_game(NewBoard, '2 :').
+    setPiece(CRow, CColumn, '     ', Board, MidBoard),
+    setPiece(NRow, NColumn, white, MidBoard, FinalBoard),
+    display_game(FinalBoard, Player2).
+
+blackTurn(Board, FinalBoard, Player1) :-
+    repeat,
+    once(readRow(CRow, 'Current')),
+    once(readColumn(CColumn, 'Current')),
+    checkPosition(CRow, CColumn, black, Board),
+    once(readRow(NRow, 'New')),
+    once(readColumn(NColumn, 'New')),
+    checkPosition(NRow, NColumn, '     ', Board),
+    setPiece(CRow, CColumn, '     ', Board, MidBoard),
+    setPiece(NRow, NColumn, black, MidBoard, FinalBoard),
+    display_game(FinalBoard, Player1).
+

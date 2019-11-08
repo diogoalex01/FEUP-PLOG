@@ -1,13 +1,11 @@
 % row validation
 % ------------------------
 
-readRow(BRow, NRow) :-
-    write('Current Row'),
-    inputRow(BRow),
-    validateRowInput(BRow),
-    write('New Row'),
-    inputRow(NRow),
-    validateRowInput(NRow).
+readRow(Row, Status) :-
+    write(Status),
+    write(' Row '),
+    inputRow(Row),
+    validateRowInput(Row).
 
 inputRow(Row) :-
     read(Row).
@@ -24,40 +22,33 @@ validateRowInput(Row) :-
 % column validation
 % ------------------------
 
-readColumn(BColumn, NColumn) :-
-    write('\nCurrent Column'),
-    inputColumn(Column),
-    validateColumnInput(Column, BColumn),
-    write('New Column'),
-    inputColumn(Column),
-    nl,
-    validateColumnInput(Column, NColumn).
+readColumn(Column, Status) :-
+    write(Status),
+    write(' Column '),
+    inputColumn(Temp_Column),
+    validateColumnInput(Temp_Column, Column),
+    write('\n').
 
-inputColumn(Column) :-
-    read(Column).
+inputColumn(Temp_Column) :-
+    read(Temp_Column).
 
-validateColumnInput('A', NewColumn) :-
-    write('\n A! \n\n'),
-    NewColumn = 1.
-validateColumnInput('B', NewColumn) :-
-    write('\n B! \n\n'),
-    NewColumn = 2.
-validateColumnInput('C', NewColumn) :-
-    write('\n C! \n\n'),
-    NewColumn = 3.
-validateColumnInput('D', NewColumn) :-
-    write('\n D! \n\n'),
-    NewColumn = 4.
-validateColumnInput('E', NewColumn) :-
-    write('\n E! \n\n'),
-    NewColumn = 5.
+validateColumnInput('A', Column) :-
+    Column = 1.
+validateColumnInput('B', Column) :-
+    Column = 2.
+validateColumnInput('C', Column) :-
+    Column = 3.
+validateColumnInput('D', Column) :-
+    Column = 4.
+validateColumnInput('E', Column) :-
+    Column = 5.
 
-validateColumnInput(_Column, NewColumn) :-
+validateColumnInput(_Column, Column) :-
     write('\nInvalid Column!\n\n'),
-    inputColumn(NewColumn),
-    validateColumnInput(NewColumn).
+    inputColumn(Column),
+    validateColumnInput(Column).
 
-% empty postition
+% check postition
 % ------------------------
 
 checkPosition(Row, Column, Piece, TabIn) :-
@@ -73,11 +64,11 @@ getRow(N, Column, Piece, [_Row|Remnant]) :-
 
 % ------------
 
-getColumn(1, [Blank|_More], Piece) :-
+getColumn(1, [Current|_More], Piece) :-
     (
-        Piece == Blank
+        Piece == Current
         ;
-        write('\nInvalid Position!\n\n'),
+        write('Invalid Position!\n\n'),
         fail
 ).
 

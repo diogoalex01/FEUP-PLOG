@@ -62,8 +62,7 @@ display_game(_board, _current_player) :-
     display_border,
     nl,
     display_board(_board, 1), % 1 - starting row number
-    display_player(_current_player),
-    nl.
+    display_player(_current_player).
 
 mainMenu(Choice) :-
     printMainMenu,
