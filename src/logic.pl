@@ -25,9 +25,11 @@ setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
 % ------------------------
 
 game(Board, Player1, Player2) :-
-    whiteTurn(Board, MidBoard, Player2),
-    blackTurn(MidBoard, FinalBoard, Player1),
-    game(FinalBoard, Player1, Player2).
+    whiteTurn(Board, BoardWhite1, Player2),
+    whiteTurn(BoardWhite1, BoardWhite2, Player2),
+    blackTurn(BoardWhite2, BoardBlack1, Player1),
+    blackTurn(BoardBlack1, BoardBlack2, Player1),
+    game(BoardBlack2, Player1, Player2).
 
 whiteTurn(Board, FinalBoard, Player2) :-
     repeat,
@@ -38,13 +40,12 @@ blackTurn(Board, FinalBoard, Player1) :-
     move(Board, FinalBoard, black, Player1).
 
 move(Board, FinalBoard, Color, Player) :-
-    readCoordinates(CRow, CColumn, Color, 'Current' , Board),
-    readCoordinates(NRow, NColumn, '     ', 'New' , Board),
-    setPiece(CRow, CColumn, '     ', Board, MidBoard),
-    setPiece(NRow, NColumn, Color, MidBoard, FinalBoard),
+    readCoordinates(CRow, CColumn, 'Current'),
+    checkPosition(CRow, CColumn, Color, Board),
+    readCoordinates(NRow, NColumn, 'New'),
+    checkMove(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard),
     display_game(FinalBoard, Player).
 
-readCoordinates(Row, Column, Piece, Status, Board) :-
+readCoordinates(Row, Column, Status) :-
     once(readRow(Row, Status)),
-    once(readColumn(Column, Status)),
-    checkPosition(Row, Column, Piece, Board).
+    once(readColumn(Column, Status)).

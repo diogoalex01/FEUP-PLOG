@@ -15,7 +15,7 @@ validateRowInput(Row) :-
         Row =< 5,
         Row >= 1
         ;
-        write('\nInvalid Row!\n\n'),
+        write('\nInvalid row!\n\n'),
         fail
 ).
 
@@ -44,7 +44,7 @@ validateColumnInput('E', Column) :-
     Column = 5.
 
 validateColumnInput(_Column, Column) :-
-    write('\nInvalid Column!\n\n'),
+    write('\nInvalid column!\n\n'),
     inputColumn(Column),
     validateColumnInput(Column).
 
@@ -66,9 +66,10 @@ getRow(N, Column, Piece, [_Row|Remnant]) :-
 
 getColumn(1, [Current|_More], Piece) :-
     (
+        %write('P1--'), write(Piece), write('--'),
+        %write('C1--'), write(Current), write('--\n'),
         Piece == Current
         ;
-        write('Invalid Position!\n\n'),
         fail
 ).
 
@@ -76,3 +77,45 @@ getColumn(N, [_X|Remnant], Piece) :-
     N > 1,
     Next is N - 1,
     getColumn(Next, Remnant, Piece).
+
+% check move possibilities
+% ------------------------
+
+checkMove(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard) :-
+    checkDrag(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard),
+    checkDiagonal(CRow, CColumn, NRow, NColumn).
+
+checkDiagonal(CRow, CColumn, NRow, NColumn) :-
+    (
+        % just moving columns
+        abs(CColumn - NColumn) =:= 1,
+        CRow - NRow =:= 0
+        ;
+        % just moving rows
+        abs(CRow - NRow) =:= 1,
+        CColumn - NColumn =:= 0
+        ;
+        % both movements -> diagonally
+        write('Diagonal moves are not allowed!\n\n'),
+        fail
+).
+
+checkDrag(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard) :-
+    (
+        checkPosition(NRow, NColumn, '     ', Board),
+        setPiece(CRow, CColumn, '     ', Board, MidBoard),
+        setPiece(NRow, NColumn, Color, MidBoard, FinalBoard)
+        ;
+        checkPosition(NRow, NColumn, Color, Board),
+        setPiece(CRow, CColumn, '     ', Board, MidBoard),
+        Row is 2 * NRow - CRow,
+        Row > 0,
+        Row < 6,
+        Column is 2 * NColumn - CColumn,
+        Column > 0,
+        Column < 6,
+        setPiece(Row, Column, Color, MidBoard, FinalBoard)
+        ;
+        write('Invalid move!\n\n'),
+        fail
+).
