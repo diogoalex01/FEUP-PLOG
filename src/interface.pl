@@ -28,10 +28,13 @@ board_end(
 display_border :-
     write(' ----- ------- ------- ------- ------- -------').
 
-display_player(Player) :-
+display_player(Player, Color) :-
     nl,
-    write(' Player: '),
+    write('* Player: '),
     write(Player),
+    write(' ('),
+    write(Color),
+    write(') *'),
     nl, nl.
 
 display_cell(Cell) :-
@@ -55,21 +58,21 @@ display_board([Head|Tail], N) :-
     N1 is N + 1,
     display_board(Tail, N1).
 
-display_game(_board, _current_player) :-
-    nl,
+display_game(_board, _current_player, Color) :-
     write('       ------- ------- ------- ------- -------\n'),
     write('      |   A   -   B   -   C   -   D   -   E   |\n'),
     display_border,
     nl,
     display_board(_board, 1), % 1 - starting row number
-    display_player(_current_player).
+    display_player(_current_player, Color).
 
 mainMenu(Choice) :-
     printMainMenu,
     write('Option: '),
     getChar(Char),
     (
-        Char = '1' -> Choice = 1
+        Char = '1' -> Choice = 1,
+        nl
         ;
         Char = '2' -> Choice = 2
         ;

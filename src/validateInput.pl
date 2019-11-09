@@ -82,7 +82,7 @@ getColumn(N, [_X|Remnant], Piece) :-
 % ------------------------
 
 checkMove(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard) :-
-    checkDrag(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard),
+    checkDrag(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard),
     checkDiagonal(CRow, CColumn, NRow, NColumn).
 
 checkDiagonal(CRow, CColumn, NRow, NColumn) :-
@@ -100,21 +100,21 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
         fail
 ).
 
-checkDrag(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard) :-
+checkDrag(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard) :-
     (
         checkPosition(NRow, NColumn, '     ', Board),
-        setPiece(CRow, CColumn, '     ', Board, MidBoard),
+        setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, FinalBoard)
         ;
         checkPosition(NRow, NColumn, Color, Board),
-        setPiece(CRow, CColumn, '     ', Board, MidBoard),
-        Row is 2 * NRow - CRow,
-        Row > 0,
-        Row < 6,
-        Column is 2 * NColumn - CColumn,
-        Column > 0,
-        Column < 6,
-        setPiece(Row, Column, Color, MidBoard, FinalBoard)
+        NNRow is 2 * NRow - CRow,
+        NNRow > 0,
+        NNRow < 6,
+        NNColumn is 2 * NColumn - CColumn,
+        NNColumn > 0,
+        NNColumn < 6,
+        checkDrag(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Board, MidBoard),
+        setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
         write('Invalid move!\n\n'),
         fail

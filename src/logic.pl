@@ -44,7 +44,7 @@ move(Board, FinalBoard, Color, Player) :-
     checkPosition(CRow, CColumn, Color, Board),
     readCoordinates(NRow, NColumn, 'New'),
     checkMove(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard),
-    display_game(FinalBoard, Player).
+    display_game(FinalBoard, Player, Color).
 
 readCoordinates(Row, Column, Status) :-
     once(readRow(Row, Status)),
