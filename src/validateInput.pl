@@ -81,9 +81,14 @@ getColumn(N, [_X|Remnant], Piece) :-
 % check move possibilities
 % ------------------------
 
-checkMove(CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard) :-
-    checkDrag(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard),
-    checkDiagonal(CRow, CColumn, NRow, NColumn).
+checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard) :-
+    (
+        checkDrag(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0),
+        checkDiagonal(CRow, CColumn, NRow, NColumn)
+        ;
+        write('Invalid move!\n\n'),
+        fail
+).
 
 checkDiagonal(CRow, CColumn, NRow, NColumn) :-
     (
@@ -96,26 +101,46 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
         CColumn - NColumn =:= 0
         ;
         % both movements -> diagonally
-        write('Diagonal moves are not allowed!\n\n'),
+        write('Diagonals are not allowed!\n'),
         fail
 ).
 
-checkDrag(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Board, FinalBoard) :-
+checkDrag(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N) :-
     (
         checkPosition(NRow, NColumn, '     ', Board),
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, FinalBoard)
         ;
+        checkPosition(NRow, NColumn, Adversary, Board),
+        N > 0,
+        setPiece(IRow, IColumn, '     ', Board, MidBoard),
+        setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
+        write('IR: '), write(IRow), write(' CR: '), write(CRow), write(' NR: '), write(NRow), nl,
+        %write('IC: '), write(IColumn), write(' CC: '), write(CColumn), write(' NC: '), write(NColumn), nl,
+        TRow is 2 * NRow - CRow,
+        TColumn is 2 * NColumn - CColumn,
+        checkLimits(TRow, TColumn),
+        checkPosition(TRow, TColumn, '     ', Board),
+        setPiece(TRow, TColumn, Adversary, MidBoard1, FinalBoard)
+        ;
         checkPosition(NRow, NColumn, Color, Board),
         NNRow is 2 * NRow - CRow,
-        NNRow > 0,
-        NNRow < 6,
         NNColumn is 2 * NColumn - CColumn,
-        NNColumn > 0,
-        NNColumn < 6,
-        checkDrag(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Board, MidBoard),
+        checkLimits(NNRow, NNColumn),
+        Next is N + 1,
+        write('PASSS\n'),
+        checkDrag(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
-        write('Invalid move!\n\n'),
+        fail
+).
+
+checkLimits(Row, Column) :-
+    (
+        Row > 0,
+        Row < 6,
+        Column > 0,
+        Column < 6
+        ;
         fail
 ).

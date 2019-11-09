@@ -8,7 +8,7 @@
 nudge :-
     mainMenu(Choice),
     (
-        Choice = 1 -> board_beg(_Var),
+        Choice = 1 -> board_mid(_Var),
                 display_game(_Var, '1', white),
                 game(_Var, '1', '2')
 ).
