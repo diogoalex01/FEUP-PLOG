@@ -25,26 +25,33 @@ setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
 % ------------------------
 
 game(Board, Player1, Player2) :-
-    whiteTurn(Board, BoardWhite1, Player1),
-    whiteTurn(BoardWhite1, BoardWhite2, Player2),
-    blackTurn(BoardWhite2, BoardBlack1, Player2),
-    blackTurn(BoardBlack1, BoardBlack2, Player1),
+    whiteTurn(Board, Board, BoardWhite1, Player1),
+    whiteTurn(Board, BoardWhite1, BoardWhite2, Player2),
+    blackTurn(BoardWhite1, BoardWhite2, BoardBlack1, Player2),
+    blackTurn(BoardWhite2, BoardBlack1, BoardBlack2, Player1),
     game(BoardBlack2, Player1, Player2).
 
-whiteTurn(Board, FinalBoard, Player) :-
+whiteTurn(PreviousBoard, Board, FinalBoard, Player) :-
     repeat,
-    move(Board, FinalBoard, white, black, Player).
+    move(PreviousBoard, Board, FinalBoard, white, black, Player).
 
-blackTurn(Board, FinalBoard, Player) :-
+blackTurn(PreviousBoard, Board, FinalBoard, Player) :-
     repeat,
-    move(Board, FinalBoard, black, white, Player).
+    move(PreviousBoard, Board, FinalBoard, black, white, Player).
 
-move(Board, FinalBoard, Color, Adversary, Player) :-
-    readCoordinates(CRow, CColumn, 'Current'),
-    checkPosition(CRow, CColumn, Color, Board),
-    readCoordinates(NRow, NColumn, 'New'),
-    checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard),
-    display_game(FinalBoard, Player, Color).
+move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player) :-
+    (
+        readCoordinates(CRow, CColumn, 'Current'),
+        checkPosition(CRow, CColumn, Color, Board),
+        readCoordinates(NRow, NColumn, 'New'),
+        checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard),
+        PreviousBoard \= FinalBoard,
+        display_game(FinalBoard, Player, Color)
+        ;
+        write('Cannot return to the original position!\n\n'),
+        fail
+).
+
 
 readCoordinates(Row, Column, Status) :-
     once(readRow(Row, Status)),
