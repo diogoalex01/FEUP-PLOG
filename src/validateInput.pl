@@ -115,20 +115,45 @@ checkDrag(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, 
         N > 0,
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
-        write('IR: '), write(IRow), write(' CR: '), write(CRow), write(' NR: '), write(NRow), nl,
-        %write('IC: '), write(IColumn), write(' CC: '), write(CColumn), write(' NC: '), write(NColumn), nl,
+        %write('IR: '), write(IRow), write(' CR: '), write(CRow), write(' NR: '), write(NRow), nl,
+        write('IC: '), write(IColumn), write(' CC: '), write(CColumn), write(' NC: '), write(NColumn), nl,
         TRow is 2 * NRow - CRow,
         TColumn is 2 * NColumn - CColumn,
-        checkLimits(TRow, TColumn),
+        write('N: '), write(N), nl,
+        write('TR: '), write(TRow), write(' TC: '), write(TColumn), nl,
+        write('2.5--\n'),
         checkPosition(TRow, TColumn, '     ', Board),
+        checkLimits(TRow, TColumn),
         setPiece(TRow, TColumn, Adversary, MidBoard1, FinalBoard)
+        ;
+        checkPosition(NRow, NColumn, Adversary, Board),
+        N > 0,
+        setPiece(IRow, IColumn, '     ', Board, MidBoard),
+        setPiece(NRow, NColumn, Color, MidBoard, FinalBoard),
+        TRow is 2 * NRow - CRow,
+        TColumn is 2 * NColumn - CColumn,
+        write('hello---\n'),
+        (
+            write('entrei ao menos'),
+            TRow < 1,
+            write('1.')
+            ;
+            TColumn < 1,
+            write('2.')
+            ;
+            write('3.'),
+            TRow > 5
+            ;
+            TColumn > 5,
+            write('4.')
+        ),
+        write('bye---\n')
         ;
         checkPosition(NRow, NColumn, Color, Board),
         NNRow is 2 * NRow - CRow,
         NNColumn is 2 * NColumn - CColumn,
         checkLimits(NNRow, NNColumn),
-        Next is N + 1,
-        write('PASSS\n'),
+        Next is N + 1, % counts the number of pieces nudging
         checkDrag(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
@@ -142,5 +167,6 @@ checkLimits(Row, Column) :-
         Column > 0,
         Column < 6
         ;
-        fail
+        write('YOU WON!\n'),
+        !
 ).

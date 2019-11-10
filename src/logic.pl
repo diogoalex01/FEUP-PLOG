@@ -52,7 +52,6 @@ move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player) :-
         fail
 ).
 
-
 readCoordinates(Row, Column, Status) :-
     once(readRow(Row, Status)),
     once(readColumn(Column, Status)).

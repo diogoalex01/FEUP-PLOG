@@ -9,11 +9,11 @@ board_beg(
 
 board_mid(
 [
-    ['     ', '     ', '     ', '     ', '     '],
-    ['     ', white, '     ', black, '     '],
-    ['     ', white, white, '     ', '     '],
-    ['     ', black, black, '     ', '     '],
-    ['     ', '     ', '     ', '     ', '     '] 
+    [ '     ', white, white, black, '     '],
+    [white, white, black, black, '     '],
+    [ white, white, white, black, black],
+    ['     ', white, black, '     ', '     '],
+    [white, white, white, black, '     '] 
 ]).
 
 board_end(
