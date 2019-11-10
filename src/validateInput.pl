@@ -83,10 +83,21 @@ getColumn(N, [_X|Remnant], Piece) :-
 
 checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard) :-
     (
-        checkDrag(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0),
+        checkSamePosition(CRow, NRow, CColumn, NColumn),
+        checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0),
         checkDiagonal(CRow, CColumn, NRow, NColumn)
         ;
         write('Invalid move!\n\n'),
+        fail
+).
+
+checkSamePosition(CRow, NRow, CColumn, NColumn) :-
+    (
+        CRow \= NRow
+        ;
+        CColumn \= NColumn
+        ;
+        write('You are already there!\n'),
         fail
 ).
 
@@ -105,56 +116,54 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
         fail
 ).
 
-checkDrag(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N) :-
+checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N) :-
     (
+        % standard move
         checkPosition(NRow, NColumn, '     ', Board),
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, FinalBoard)
         ;
+        % nudging out of the board (3 to 2)
+        N > 1,
+        checkPosition(NRow, NColumn, Adversary, Board),
+        TRow is 2 * CRow - NRow,
+        TColumn is 2 * CColumn - NColumn,
+        TTRow is 2 * NRow - CRow,
+        TTColumn is 2 * NColumn - CColumn,
+        setPiece(IRow, IColumn, '     ', Board, MidBoard),
+        setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
+        setPiece(TRow, TColumn, '     ', MidBoard1, MidBoard2),
+        setPiece(TTRow, TTColumn, Color, MidBoard2, FinalBoard)
+        ;
+        % nudging opponents
         checkPosition(NRow, NColumn, Adversary, Board),
         N > 0,
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
         %write('IR: '), write(IRow), write(' CR: '), write(CRow), write(' NR: '), write(NRow), nl,
-        write('IC: '), write(IColumn), write(' CC: '), write(CColumn), write(' NC: '), write(NColumn), nl,
+        %write('IC: '), write(IColumn), write(' CC: '), write(CColumn), write(' NC: '), write(NColumn), nl,
         TRow is 2 * NRow - CRow,
         TColumn is 2 * NColumn - CColumn,
-        write('N: '), write(N), nl,
-        write('TR: '), write(TRow), write(' TC: '), write(TColumn), nl,
-        write('2.5--\n'),
         checkPosition(TRow, TColumn, '     ', Board),
         checkLimits(TRow, TColumn),
         setPiece(TRow, TColumn, Adversary, MidBoard1, FinalBoard)
         ;
+        % nudging out of the board (2 to 1)
         checkPosition(NRow, NColumn, Adversary, Board),
         N > 0,
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, FinalBoard),
         TRow is 2 * NRow - CRow,
         TColumn is 2 * NColumn - CColumn,
-        write('hello---\n'),
-        (
-            write('entrei ao menos'),
-            TRow < 1,
-            write('1.')
-            ;
-            TColumn < 1,
-            write('2.')
-            ;
-            write('3.'),
-            TRow > 5
-            ;
-            TColumn > 5,
-            write('4.')
-        ),
-        write('bye---\n')
+        (TRow < 1 ; TColumn < 1 ; TRow > 5 ; TColumn > 5)
         ;
+        % standard nudge
         checkPosition(NRow, NColumn, Color, Board),
         NNRow is 2 * NRow - CRow,
         NNColumn is 2 * NColumn - CColumn,
         checkLimits(NNRow, NNColumn),
         Next is N + 1, % counts the number of pieces nudging
-        checkDrag(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next),
+        checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
         fail
@@ -167,6 +176,5 @@ checkLimits(Row, Column) :-
         Column > 0,
         Column < 6
         ;
-        write('YOU WON!\n'),
-        !
+        write('YOU WON!\n')
 ).

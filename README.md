@@ -2,6 +2,5 @@
 
 ## Known Issues
 
-* Moving a Piece to its current position
-* Error messages are not totally accurate
+* Error messages are not totally accurate (inheritance)
 * Current Player's color not displayed correctly
