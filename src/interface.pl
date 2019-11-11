@@ -10,7 +10,7 @@ board_beg(
 board_mid(
 [
     [ '     ', white, white, black, '     '],
-    [white, white, black, black, '     '],
+    [white, white, black, black, black],
     [white, white, white, black, black],
     [black, black, white, white, white],
     [white, white, white, black, '     '] 
@@ -98,3 +98,17 @@ printMainMenu :-
     write('|                                       |\n'),
     write('| Choose an option:                     |\n'),
     write(' ------- ------- ------- ------- ------- \n\n\n').
+
+
+playerOneWins :-
+    write(' ____  _                           ___               __        ___           _ \n'),
+    write('|  _ \\| | __ _ _   _  ___ _ __    / _ \\ _ __   ___   \\ \\      / (_)_ __  ___| |\n'),
+    write('| |_) | |/ _` | | | |/ _ \\ \'__|  | | | | \'_ \\ / _ \\   \\ \\ /\\ / /| | \'_ \\/ __| |\n'),
+    write('|  __/| | (_| | |_| |  __/ |     | |_| | | | |  __/    \\ V  V / | | | | \\__ \\_|\n'),
+    write('|_|   |_|\\__,_|\\__, |\\___|_|      \\___/|_| |_|\\___|     \\_/\\_/  |_|_| |_|___(_)\n'),
+    write('               |___/                                                            \n'),
+    fail.
+
+playerTwoWins :-
+    write('PLAYER TWO WINS\n'),
+    fail.

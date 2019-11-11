@@ -66,8 +66,6 @@ getRow(N, Column, Piece, [_Row|Remnant]) :-
 
 getColumn(1, [Current|_More], Piece) :-
     (
-        %write('P1--'), write(Piece), write('--'),
-        %write('C1--'), write(Current), write('--\n'),
         Piece == Current
         ;
         fail
