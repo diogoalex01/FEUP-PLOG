@@ -81,10 +81,10 @@ getColumn(N, [_X|Remnant], Piece) :-
 % check move possibilities
 % ------------------------
 
-checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard) :-
+checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, GameStatus) :-
     (
         checkSamePosition(CRow, NRow, CColumn, NColumn),
-        checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0),
+        checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0, GameStatus),
         checkDiagonal(CRow, CColumn, NRow, NColumn)
         ;
         write('Invalid move!\n\n'),
@@ -116,24 +116,12 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
         fail
 ).
 
-checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N) :-
+checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N, GameStatus) :-
     (
         % standard move
         checkPosition(NRow, NColumn, '     ', Board),
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, FinalBoard)
-        ;
-        % nudging out of the board (3 to 2)
-        N > 1,
-        checkPosition(NRow, NColumn, Adversary, Board),
-        TRow is 2 * CRow - NRow,
-        TColumn is 2 * CColumn - NColumn,
-        TTRow is 2 * NRow - CRow,
-        TTColumn is 2 * NColumn - CColumn,
-        setPiece(IRow, IColumn, '     ', Board, MidBoard),
-        setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
-        setPiece(TRow, TColumn, '     ', MidBoard1, MidBoard2),
-        setPiece(TTRow, TTColumn, Color, MidBoard2, FinalBoard)
         ;
         % nudging opponents
         checkPosition(NRow, NColumn, Adversary, Board),
@@ -155,15 +143,29 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         setPiece(NRow, NColumn, Color, MidBoard, FinalBoard),
         TRow is 2 * NRow - CRow,
         TColumn is 2 * NColumn - CColumn,
-        (TRow < 1 ; TColumn < 1 ; TRow > 5 ; TColumn > 5)
+        (TRow < 1 ; TColumn < 1 ; TRow > 5 ; TColumn > 5),
+        GameStatus = 1
+        ;
+        % nudging out of the board (3 to 2)
+        N > 1,
+        checkPosition(NRow, NColumn, Adversary, Board),
+        TRow is 2 * CRow - NRow,
+        TColumn is 2 * CColumn - NColumn,
+        TTRow is 2 * NRow - CRow,
+        TTColumn is 2 * NColumn - CColumn,
+        setPiece(IRow, IColumn, '     ', Board, MidBoard),
+        setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
+        setPiece(TRow, TColumn, '     ', MidBoard1, MidBoard2),
+        setPiece(TTRow, TTColumn, Color, MidBoard2, FinalBoard),
+        GameStatus = 1
         ;
         % standard nudge
         checkPosition(NRow, NColumn, Color, Board),
         NNRow is 2 * NRow - CRow,
         NNColumn is 2 * NColumn - CColumn,
-        checkLimits(NNRow, NNColumn),
+        %checkLimits(NNRow, NNColumn),
         Next is N + 1, % counts the number of pieces nudging
-        checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next),
+        checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next, GameStatus),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
         fail
@@ -176,5 +178,5 @@ checkLimits(Row, Column) :-
         Column > 0,
         Column < 6
         ;
-        write('YOU WON!\n')
+        fail
 ).

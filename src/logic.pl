@@ -24,27 +24,43 @@ setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
 
 % ------------------------
 
-game(Board, Player1, Player2) :-
-    whiteTurn(Board, Board, BoardWhite1, Player1),
-    whiteTurn(Board, BoardWhite1, BoardWhite2, Player2),
-    blackTurn(BoardWhite1, BoardWhite2, BoardBlack1, Player2),
-    blackTurn(BoardWhite2, BoardBlack1, BoardBlack2, Player1),
-    game(BoardBlack2, Player1, Player2).
+game(Board, Player1, Player2, GameStatus) :-
+(
+    write('1--\n'),
+    whiteTurn(Board, Board, BoardWhite1, Player1, GameStatus),
+    write('2--\n'),
+    write('GSF: '), write(GameStatus), nl,
+    GameStatus \== 1,
+    whiteTurn(Board, BoardWhite1, BoardWhite2, Player2, GameStatus),
+    write('3--\n'),
+    GameStatus \== 1,
+    blackTurn(BoardWhite1, BoardWhite2, BoardBlack1, Player2, GameStatus),
+    write('4--\n'),
+    GameStatus \== 1,
+    blackTurn(BoardWhite2, BoardBlack1, BoardBlack2, Player1, GameStatus),
+    write('5--\n'),
+    GameStatus \== 1,
+    write('6--\n'),
+    game(BoardBlack2, Player1, Player2, GameStatus),
+    write('7--\n')
+    ;
+    write(' HELLLLLLLO\n\n'),
+    !
+).
 
-whiteTurn(PreviousBoard, Board, FinalBoard, Player) :-
+whiteTurn(PreviousBoard, Board, FinalBoard, Player, GameStatus) :-
+    move(PreviousBoard, Board, FinalBoard, white, black, Player, GameStatus).
+
+blackTurn(PreviousBoard, Board, FinalBoard, Player, GameStatus) :-
+    move(PreviousBoard, Board, FinalBoard, black, white, Player, GameStatus).
+
+move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player, GameStatus) :-
     repeat,
-    move(PreviousBoard, Board, FinalBoard, white, black, Player).
-
-blackTurn(PreviousBoard, Board, FinalBoard, Player) :-
-    repeat,
-    move(PreviousBoard, Board, FinalBoard, black, white, Player).
-
-move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player) :-
     (
         readCoordinates(CRow, CColumn, 'Current'),
         checkPosition(CRow, CColumn, Color, Board),
         readCoordinates(NRow, NColumn, 'New'),
-        checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard),
+        checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, GameStatus),
         PreviousBoard \= FinalBoard,
         display_game(FinalBoard, Player, Color)
         ;

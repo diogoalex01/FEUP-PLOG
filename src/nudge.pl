@@ -9,6 +9,6 @@ nudge :-
     mainMenu(Choice),
     (
         Choice = 1 -> board_mid(_Var),
-                display_game(_Var, '1', white),
-                game(_Var, '1', '2')
+                    display_game(_Var, 'One', white),
+                    game(_Var, 'One', 'Two', _GameStatus)
 ).
