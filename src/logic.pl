@@ -24,6 +24,7 @@ setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
 
 % ------------------------
 
+% main game loop
 game(Board, Player1, Player2, GameStatus) :-
 (
     %write('1--\n'),
@@ -52,12 +53,15 @@ game(Board, Player1, Player2, GameStatus) :-
     !
 ).
 
+% standard white piece turn
 whiteTurn(PreviousBoard, Board, FinalBoard, Player, GameStatus, DisplayColor) :-
     once(move(PreviousBoard, Board, FinalBoard, white, black, Player, GameStatus, DisplayColor)).
 
+% standard black piece turn
 blackTurn(PreviousBoard, Board, FinalBoard, Player, GameStatus, DisplayColor) :-
     once(move(PreviousBoard, Board, FinalBoard, black, white, Player, GameStatus, DisplayColor)).
 
+% reads coordinates and if everything succeeds, the move is made
 move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player, GameStatus, DisplayColor) :-
     repeat,
     (
@@ -79,10 +83,7 @@ move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player, GameStatus, Dis
         fail
 ).
 
-readCoordinates(Row, Column, Status) :-
-    once(readRow(Row, Status)),
-    once(readColumn(Column, Status)).
-
+% checks whether the game is over (GameStatus \== 1) and prints the winner (player)
 gameOver(GameStatus, Player) :-
     (   
         %write('2.1--\n'),

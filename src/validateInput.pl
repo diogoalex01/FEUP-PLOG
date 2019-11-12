@@ -48,7 +48,7 @@ validateColumnInput(_Column, Column) :-
     inputColumn(Column),
     validateColumnInput(Column).
 
-% check postition
+% checks if a Piece is in that place (Row, Column)
 % ------------------------
 
 checkPosition(Row, Column, Piece, TabIn) :-
@@ -79,6 +79,7 @@ getColumn(N, [_X|Remnant], Piece) :-
 % check move possibilities
 % ------------------------
 
+% verifies if a given move (CRow, CColumn) -> (NRow, NColumn) is valid
 checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, PreviousBoard, GameStatus) :-
     (
         %write('1--\n'),
@@ -87,12 +88,14 @@ checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, Pre
         once(checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0, GameStatus)),
         %write('3--\n'),
         once(checkDiagonal(CRow, CColumn, NRow, NColumn)),
+        %write('4--\n'),
         once(checkReturnPosition(PreviousBoard, FinalBoard))
-        %write('4--\n')
+        %write('5--\n')
         ;
         fail
 ).
 
+% checks if the player is trying to move to the same place
 checkSamePosition(CRow, NRow, CColumn, NColumn) :-
     (
         CRow \= NRow
@@ -103,6 +106,7 @@ checkSamePosition(CRow, NRow, CColumn, NColumn) :-
         fail
 ).
 
+% checks if the player is trying to return to the same place in the same turn
 checkReturnPosition(PreviousBoard, FinalBoard) :-
     (
         PreviousBoard \= FinalBoard
@@ -111,6 +115,7 @@ checkReturnPosition(PreviousBoard, FinalBoard) :-
         fail
 ).
 
+% checks if the player is trying to move diagonally
 checkDiagonal(CRow, CColumn, NRow, NColumn) :-
     (
         % just moving columns
@@ -121,11 +126,26 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
         abs(CRow - NRow) =:= 1,
         CColumn - NColumn =:= 0
         ;
+        % moving more than a cell vertically
+        abs(CColumn - NColumn) =\= 1,
+        CRow - NRow =:= 0,
+        write('Can\'t move more than a cell at a time!\n\n'),
+        fail
+        ;
+        % moving more than a cell horizontally
+        abs(CRow - NRow) =\= 1,
+        CColumn - NColumn =:= 0,
+        write('Can\'t move more than a cell at a time!\n\n'),
+        fail
+        ;
         % both movements -> diagonally
+        abs(CColumn - NColumn) =:= 1,
+        abs(CRow - NRow) =:= 1,
         write('Diagonals are not allowed!\n\n'),
         fail
 ).
 
+% checks if the player is trying to nudge incorrectly
 checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N, GameStatus) :-
     (
         % standard move
@@ -179,15 +199,5 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
         write('Invalid Nudge!\n\n'),
-        fail
-).
-
-checkLimits(Row, Column) :-
-    (
-        Row > 0,
-        Row < 6,
-        Column > 0,
-        Column < 6
-        ;
         fail
 ).

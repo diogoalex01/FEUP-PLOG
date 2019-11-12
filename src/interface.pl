@@ -11,9 +11,9 @@ board_mid(
 [
     [ '     ', white, white, black, '     '],
     [white, white, black, black, black],
-    [white, white, white, black, black],
+    ['     ', '     ', '     ', '     ', black],
     [black, black, white, white, white],
-    [white, white, white, black, '     '] 
+    [white, white, white, black, white] 
 ]).
 
 board_end(
