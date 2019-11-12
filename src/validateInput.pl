@@ -51,8 +51,8 @@ validateColumnInput(_Column, Column) :-
 % checks if a Piece is in that place (Row, Column)
 % ------------------------
 
-checkPosition(Row, Column, Piece, TabIn) :-
-    getRow(Row, Column, Piece, TabIn).
+checkPosition(Row, Column, Piece, Board) :-
+    getRow(Row, Column, Piece, Board).
 
 getRow(1, Column, Piece, [Row|_More]) :-
     getColumn(Column, Row, Piece).

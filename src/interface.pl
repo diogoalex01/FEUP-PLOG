@@ -85,6 +85,32 @@ mainMenu(Choice) :-
         mainMenu(Choice)
 ).
 
+gameOption(Choice) :-
+    printGameOption,
+    write('Option: '),
+    getChar(Char),
+    (
+        Char = '1' -> Choice = 1,
+        nl
+        ;
+        Char = '2' -> Choice = 2
+        ;
+        nl,
+        write('Invalid input. Try again.\n'),
+        pressEnter,
+        nl,
+        gameOption(Choice)
+).
+
+printGameOption :-
+    clearScreen,
+    write(' ------- ------- ------- ------- ------- \n'),
+    write('|                                       |\n'),
+    write('| 1. SinglePlayer                       |\n'),
+    write('| 2. MultiPlayer                        |\n'),
+    write('|                                       |\n'),
+    write(' ------- ------- ------- ------- ------- \n\n\n').
+
 printMainMenu :-
     clearScreen,
     write(' ------- ------- ------- ------- ------- \n'),
@@ -98,7 +124,6 @@ printMainMenu :-
     write('|                                       |\n'),
     write('| Choose an option:                     |\n'),
     write(' ------- ------- ------- ------- ------- \n\n\n').
-
 
 playerOneWins :-
     write(' ____  _                          ___                        _           _ \n'),

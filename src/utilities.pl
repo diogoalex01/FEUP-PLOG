@@ -24,3 +24,8 @@ checkLimits(Row, Column) :-
     ;
     fail
 ).
+
+genPosition(Row, Column) :-
+  member(Row, [1, 2, 3, 4, 5]),
+  member(Column, [1, 2, 3, 4, 5]).
+  

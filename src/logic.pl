@@ -25,9 +25,9 @@ setColumn(N, Piece, [X|Remnant], [X|NewRemnant]) :-
 % ------------------------
 
 % main game loop
-game(Board, Player1, Player2, GameStatus) :-
+game(Board, Player1, Player2, GameStatus, GameChoice) :-
 (
-    %write('1--\n'),
+    write('1--\n'),
     whiteTurn(Board, Board, BoardWhite1, Player1, GameStatus, white),
     %write('2--\n'),
     %write('GSF: '), write(GameStatus), nl,
@@ -36,22 +36,51 @@ game(Board, Player1, Player2, GameStatus) :-
     whiteTurn(Board, BoardWhite1, BoardWhite2, Player2, GameStatus, black),
     %write('4--\n'),
     once(gameOver(GameStatus, '1')),
-    %write('5--\n'),
-    blackTurn(BoardWhite1, BoardWhite2, BoardBlack1, Player2, GameStatus, black),
-    %write('6--\n'),
-    once(gameOver(GameStatus, '2')),
-    %write('7--\n'),
-    blackTurn(BoardWhite2, BoardBlack1, BoardBlack2, Player1, GameStatus, white),
-    %write('8--\n'),
-    once(gameOver(GameStatus, '2')),
-    %write('9--\n'),
+    write('5--\n'),
+    (
+        write('6--\n'),
+        GameChoice = 1,
+        write('7--\n'),
+        gameAI(BoardWhite2, Player1, Player2),
+        write('8--\n')
+        ;
+        write('9--\n'),
+        GameChoice = 2,
+        write('10--\n'),
+        blackTurn(BoardWhite1, BoardWhite2, BoardBlack1, Player2, GameStatus, black),
+        write('11--\n'),
+        once(gameOver(GameStatus, '2')),
+        write('12--\n'),
+        blackTurn(BoardWhite2, BoardBlack1, BoardBlack2, Player1, GameStatus, white),
+        write('13--\n'),
+        once(gameOver(GameStatus, '2')),
+        write('14--\n')
+    ),
     %write('10--\n'),
     game(BoardBlack2, Player1, Player2, GameStatus)
-    %write('11--\n')
     ;
     write('\n* Thank you for playing! *\n\n'),
     !
 ).
+
+gameAI(Board, Player1, Player2) :-
+    %display_game(Board, Player2, black),
+    findall(FinalBoard, moveAI(Board, black, FinalBoard), AllBoards1),
+    write('88--\n'),
+    %display_game(Board, Player2, black),
+    %length(AllBoards, Length),
+    %write(Length), nl,
+    getFirstBoard(AllBoards1, NewFinalBoard),
+    write('866--\n'),
+    display_game(NewFinalBoard, Player2, black),
+    findall(NewFinalFinalBoard, moveAI(NewFinalBoard, black, NewFinalFinalBoard), AllBoards2),
+    getFirstBoard(AllBoards2, NewFinalFinalFinalBoard),
+    display_game(NewFinalFinalFinalBoard, Player1, white).
+
+getFirstBoard([], []).
+getFirstBoard([A|_], A) :-
+    length(A, X),
+    write(X), nl.
 
 % standard white piece turn
 whiteTurn(PreviousBoard, Board, FinalBoard, Player, GameStatus, DisplayColor) :-
@@ -82,6 +111,51 @@ move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player, GameStatus, Dis
         write('* Try again! *\n\n'),
         fail
 ).
+
+moveAI(Board, Piece, FinalBoard) :-
+    genPosition(Row, Column),
+    checkPosition(Row, Column, Piece, Board),
+    checkMoveAI(Row, Column, Board, FinalBoard).
+
+checkMoveAI(Row, Column, Board, FinalBoard) :-
+    R is Row - 1,
+    R > 0,
+    %write('2.1--\n'),
+    %write('R1-- '), write(R), nl,
+    checkPosition(R, Column, '     ', Board),
+    setPiece(Row, Column, '     ', Board, MidBoard),
+    setPiece(R, Column, black, MidBoard, FinalBoard)
+    %write('cima--\n'),
+    ;
+    R is Row + 1,
+    R < 6,
+    %write('2.2--\n'),
+    %write('R2-- '), write(R), nl,
+    checkPosition(R, Column, '     ', Board),
+    setPiece(Row, Column, '     ', Board, MidBoard),
+    setPiece(R, Column, black, MidBoard, FinalBoard)
+    %write('baixo--\n'),
+    ;
+    C is Column - 1,
+    C > 0,
+    %write('2.3--\n'),
+    %write('C1-- '), write(C), nl,
+    checkPosition(Row, C, '     ', Board),
+    setPiece(Row, Column, '     ', Board, MidBoard),
+    setPiece(Row, C, black, MidBoard, FinalBoard)
+    %write('esq--\n'),
+    ;
+    C is Column + 1,
+    C < 6,
+    %write('2.4--\n'),
+    %write('C2-- '), write(C), nl,
+    checkPosition(Row, C, '     ', Board),
+    setPiece(Row, Column, '     ', Board, MidBoard),
+    setPiece(Row, C, black, MidBoard, FinalBoard)
+    %write('dir--\n'),
+    ;
+    %write('troca\n'),
+    fail.
 
 % checks whether the game is over (GameStatus \== 1) and prints the winner (player)
 gameOver(GameStatus, Player) :-
