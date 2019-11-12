@@ -79,13 +79,17 @@ getColumn(N, [_X|Remnant], Piece) :-
 % check move possibilities
 % ------------------------
 
-checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, GameStatus) :-
+checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, PreviousBoard, GameStatus) :-
     (
-        checkSamePosition(CRow, NRow, CColumn, NColumn),
-        checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0, GameStatus),
-        checkDiagonal(CRow, CColumn, NRow, NColumn)
+        %write('1--\n'),
+        once(checkSamePosition(CRow, NRow, CColumn, NColumn)),
+        %write('2--\n'),
+        once(checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0, GameStatus)),
+        %write('3--\n'),
+        once(checkDiagonal(CRow, CColumn, NRow, NColumn)),
+        once(checkReturnPosition(PreviousBoard, FinalBoard))
+        %write('4--\n')
         ;
-        write('Invalid move!\n\n'),
         fail
 ).
 
@@ -95,7 +99,15 @@ checkSamePosition(CRow, NRow, CColumn, NColumn) :-
         ;
         CColumn \= NColumn
         ;
-        write('You are already there!\n'),
+        write('You are already there!\n\n'),
+        fail
+).
+
+checkReturnPosition(PreviousBoard, FinalBoard) :-
+    (
+        PreviousBoard \= FinalBoard
+        ;
+        write('Cannot return to the starting position!\n'),
         fail
 ).
 
@@ -110,7 +122,7 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
         CColumn - NColumn =:= 0
         ;
         % both movements -> diagonally
-        write('Diagonals are not allowed!\n'),
+        write('Diagonals are not allowed!\n\n'),
         fail
 ).
 
@@ -166,6 +178,7 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next, GameStatus),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
+        write('Invalid Nudge!\n\n'),
         fail
 ).
 

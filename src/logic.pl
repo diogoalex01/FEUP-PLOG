@@ -30,19 +30,19 @@ game(Board, Player1, Player2, GameStatus) :-
     whiteTurn(Board, Board, BoardWhite1, Player1, GameStatus, white),
     %write('2--\n'),
     %write('GSF: '), write(GameStatus), nl,
-    checkVictory(GameStatus, '1'),
+    once(gameOver(GameStatus, '1')),
     %write('3--\n'),
     whiteTurn(Board, BoardWhite1, BoardWhite2, Player2, GameStatus, black),
     %write('4--\n'),
-    checkVictory(GameStatus, '1'),
+    once(gameOver(GameStatus, '1')),
     %write('5--\n'),
     blackTurn(BoardWhite1, BoardWhite2, BoardBlack1, Player2, GameStatus, black),
     %write('6--\n'),
-    checkVictory(GameStatus, '2'),
+    once(gameOver(GameStatus, '2')),
     %write('7--\n'),
     blackTurn(BoardWhite2, BoardBlack1, BoardBlack2, Player1, GameStatus, white),
     %write('8--\n'),
-    checkVictory(GameStatus, '2'),
+    once(gameOver(GameStatus, '2')),
     %write('9--\n'),
     %write('10--\n'),
     game(BoardBlack2, Player1, Player2, GameStatus)
@@ -68,14 +68,14 @@ move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player, GameStatus, Dis
         %write('1.3--\n'),
         readCoordinates(NRow, NColumn, 'New'),
         %write('1.4--\n'),
-        checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, GameStatus),
+        checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, PreviousBoard, GameStatus),
         %write('1.5--\n'),
-        PreviousBoard \= FinalBoard,
+        %PreviousBoard \= FinalBoard,
         %write('1.6--\n'),
         display_game(FinalBoard, Player, DisplayColor)
         %write('1.7--\n')
         ;
-        write('Cannot return to the original position!\n\n'),
+        write('* Try again! *\n\n'),
         fail
 ).
 
@@ -83,7 +83,7 @@ readCoordinates(Row, Column, Status) :-
     once(readRow(Row, Status)),
     once(readColumn(Column, Status)).
 
-checkVictory(GameStatus, Player) :-
+gameOver(GameStatus, Player) :-
     (   
         %write('2.1--\n'),
         GameStatus \== 1
