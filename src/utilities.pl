@@ -38,3 +38,8 @@ getBoard(PossibleBoard, SelectedBoard) :-
 findCoordinates(Row, Column, ARow, AColumn, NRow, NColumn) :-
   NRow is 2 * ARow - Row,
   NColumn is 2 * AColumn - Column.
+
+pieceCounter(Board, FinalBoard, Color) :-
+    genPosition(Row, Column),
+    checkPosition(Row, Column, Color, Board),
+    FinalBoard = Board.

@@ -11,7 +11,7 @@ board_mid(
 [
     ['     ', '     ', '     ', '     ', '     '],
     ['     ', '     ', white, '     ', '     '],
-    ['     ', '     ', '     ', white, '     '],
+    ['     ', '     ', '     ', '     ', '     '],
     ['     ',  white, black, '     ',  '     '],
     ['     ',  white, black, black,  '     ']
 ]).
@@ -93,7 +93,11 @@ gameOption(Choice) :-
         Char = '1' -> Choice = 1,
         nl
         ;
-        Char = '2' -> Choice = 2
+        Char = '2' -> Choice = 2,
+        nl
+        ;
+        Char = '3' -> Choice = 3,
+        nl
         ;
         nl,
         write('Invalid input. Try again.\n'),
@@ -106,8 +110,9 @@ printGameOption :-
     clearScreen,
     write(' ------- ------- ------- ------- ------- \n'),
     write('|                                       |\n'),
-    write('| 1. SinglePlayer                       |\n'),
-    write('| 2. MultiPlayer                        |\n'),
+    write('| 1. Computer vs Player                 |\n'),
+    write('| 2. Player vs Player                   |\n'),
+    write('| 3. Computer vs Computer               |\n'),
     write('|                                       |\n'),
     write(' ------- ------- ------- ------- ------- \n\n\n').
 
