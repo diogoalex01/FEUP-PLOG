@@ -85,11 +85,11 @@ checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, Pre
         %write('1--\n'),
         once(checkSamePosition(CRow, NRow, CColumn, NColumn)),
         %write('2--\n'),
-        once(checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0, GameStatus)),
+        once(checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0, GameStatus, 1)),
         %write('3--\n'),
         once(checkDiagonal(CRow, CColumn, NRow, NColumn)),
         %write('4--\n'),
-        once(checkReturnPosition(PreviousBoard, FinalBoard))
+        once(checkReturnPosition(PreviousBoard, FinalBoard, 1))
         %write('5--\n')
         ;
         fail
@@ -107,11 +107,14 @@ checkSamePosition(CRow, NRow, CColumn, NColumn) :-
 ).
 
 % checks if the player is trying to return to the same place in the same turn
-checkReturnPosition(PreviousBoard, FinalBoard) :-
+checkReturnPosition(PreviousBoard, FinalBoard, MessageOn) :-
     (
         PreviousBoard \= FinalBoard
         ;
+        MessageOn == 1,
         write('Cannot return to the starting position!\n'),
+        fail
+        ;
         fail
 ).
 
@@ -146,7 +149,7 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
 ).
 
 % checks if the player is trying to nudge incorrectly
-checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N, GameStatus) :-
+checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, N, GameStatus, MessageOn) :-
     (
         % standard move
         checkPosition(NRow, NColumn, '     ', Board),
@@ -187,9 +190,12 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         checkPosition(NRow, NColumn, Color, Board),
         findCoordinates(CRow, CColumn, NRow, NColumn, NNRow, NNColumn),
         Next is N + 1, % counts the number of pieces nudging
-        checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next, GameStatus),
+        checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next, GameStatus, MessageOn),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
+        MessageOn == 1,
         write('Invalid Nudge!\n'),
+        fail
+        ;
         fail
 ).

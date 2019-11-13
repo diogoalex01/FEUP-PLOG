@@ -30,10 +30,10 @@ checkMoveAI(PreviousBoard, Row, Column, Board, FinalBoard, Color, Adversary, Gam
 
 % checks if the horizontal move is valid
 checkRowAI(Row, R, Column, PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus) :-
-    once(checkNudge(Row, Column, Row, Column, R, Column, Color, Adversary, Board, FinalBoard, 0, GameStatus)),
-    once(checkReturnPosition(PreviousBoard, FinalBoard)).
+    once(checkNudge(Row, Column, Row, Column, R, Column, Color, Adversary, Board, FinalBoard, 0, GameStatus, 0)),
+    once(checkReturnPosition(PreviousBoard, FinalBoard, 0)).
 
 % checks if the vertical move is valid
 checkColumnAI(Row, C, Column, PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus) :-
-    once(checkNudge(Row, Column, Row, Column, Row, C, Color, Adversary, Board, FinalBoard, 0, GameStatus)),
-    once(checkReturnPosition(PreviousBoard, FinalBoard)).
+    once(checkNudge(Row, Column, Row, Column, Row, C, Color, Adversary, Board, FinalBoard, 0, GameStatus, 0)),
+    once(checkReturnPosition(PreviousBoard, FinalBoard, 0)).

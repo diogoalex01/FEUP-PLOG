@@ -110,7 +110,7 @@ printGameOption :-
     clearScreen,
     write(' ------- ------- ------- ------- ------- \n'),
     write('|                                       |\n'),
-    write('| 1. Computer vs Player                 |\n'),
+    write('| 1. Player vs Computer                 |\n'),
     write('| 2. Player vs Player                   |\n'),
     write('| 3. Computer vs Computer               |\n'),
     write('|                                       |\n'),
