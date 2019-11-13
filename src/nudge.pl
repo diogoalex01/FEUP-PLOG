@@ -1,9 +1,10 @@
 % to run, 'nudge.'
 
 :- include('interface.pl').
-:- include('utilities.pl').
 :- include('logic.pl').
 :- include('validateInput.pl').
+:- include('ai.pl').
+:- include('utilities.pl').
 :- use_module(library(random)).
 
 nudge :-

@@ -129,19 +129,19 @@ checkDiagonal(CRow, CColumn, NRow, NColumn) :-
         % moving more than a cell vertically
         abs(CColumn - NColumn) =\= 1,
         CRow - NRow =:= 0,
-        write('Can\'t move more than a cell at a time!\n\n'),
+        write('Can\'t move more than a cell at a time!\n'),
         fail
         ;
         % moving more than a cell horizontally
         abs(CRow - NRow) =\= 1,
         CColumn - NColumn =:= 0,
-        write('Can\'t move more than a cell at a time!\n\n'),
+        write('Can\'t move more than a cell at a time!\n'),
         fail
         ;
         % both movements -> diagonally
         abs(CColumn - NColumn) =:= 1,
         abs(CRow - NRow) =:= 1,
-        write('Diagonals are not allowed!\n\n'),
+        write('Diagonals are not allowed!\n'),
         fail
 ).
 
@@ -158,10 +158,7 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         N > 0,
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
-        %write('IR: '), write(IRow), write(' CR: '), write(CRow), write(' NR: '), write(NRow), nl,
-        %write('IC: '), write(IColumn), write(' CC: '), write(CColumn), write(' NC: '), write(NColumn), nl,
-        TRow is 2 * NRow - CRow,
-        TColumn is 2 * NColumn - CColumn,
+        findCoordinates(CRow, CColumn, NRow, NColumn, TRow, TColumn),
         checkPosition(TRow, TColumn, '     ', Board),
         checkLimits(TRow, TColumn),
         setPiece(TRow, TColumn, Adversary, MidBoard1, FinalBoard)
@@ -171,18 +168,15 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         N > 0,
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, FinalBoard),
-        TRow is 2 * NRow - CRow,
-        TColumn is 2 * NColumn - CColumn,
+        findCoordinates(CRow, CColumn, NRow, NColumn, TRow, TColumn),
         (TRow < 1 ; TColumn < 1 ; TRow > 5 ; TColumn > 5),
         GameStatus = 1
         ;
         % nudging out of the board (3 to 2)
         N > 1,
         checkPosition(NRow, NColumn, Adversary, Board),
-        TRow is 2 * CRow - NRow,
-        TColumn is 2 * CColumn - NColumn,
-        TTRow is 2 * NRow - CRow,
-        TTColumn is 2 * NColumn - CColumn,
+        findCoordinates(NRow, NColumn, CRow, CColumn, TRow, TColumn),
+        findCoordinates(CRow, CColumn, NRow, NColumn, TTRow, TTColumn),
         setPiece(IRow, IColumn, '     ', Board, MidBoard),
         setPiece(NRow, NColumn, Color, MidBoard, MidBoard1),
         setPiece(TRow, TColumn, '     ', MidBoard1, MidBoard2),
@@ -191,13 +185,11 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         ;
         % standard nudge
         checkPosition(NRow, NColumn, Color, Board),
-        NNRow is 2 * NRow - CRow,
-        NNColumn is 2 * NColumn - CColumn,
-        %checkLimits(NNRow, NNColumn),
+        findCoordinates(CRow, CColumn, NRow, NColumn, NNRow, NNColumn),
         Next is N + 1, % counts the number of pieces nudging
         checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next, GameStatus),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
-        write('Invalid Nudge!\n\n'),
+        write('Invalid Nudge!\n'),
         fail
 ).

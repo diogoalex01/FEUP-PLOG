@@ -25,7 +25,16 @@ checkLimits(Row, Column) :-
     fail
 ).
 
+% generates sequential value for the Row and Column argument
 genPosition(Row, Column) :-
   member(Row, [1, 2, 3, 4, 5]),
   member(Column, [1, 2, 3, 4, 5]).
   
+% randomly selects one of the possible boards
+getBoard(PossibleBoard, SelectedBoard) :-
+  random_select(SelectedBoard, PossibleBoard, _).
+
+% finds coordinates of new positions for nudges (symmetric)
+findCoordinates(Row, Column, ARow, AColumn, NRow, NColumn) :-
+  NRow is 2 * ARow - Row,
+  NColumn is 2 * AColumn - Column.
