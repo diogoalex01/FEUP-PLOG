@@ -43,3 +43,6 @@ pieceCounter(Board, FinalBoard, Color) :-
     genPosition(Row, Column),
     checkPosition(Row, Column, Color, Board),
     FinalBoard = Board.
+
+join_lists([], L, L).
+join_lists([X|L1], L2, [X|L3]):- join_lists(L1, L2, L3). 

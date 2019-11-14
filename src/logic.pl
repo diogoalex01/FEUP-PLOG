@@ -73,31 +73,62 @@ game(Board, Player1, Player2, GameStatus, GameChoice) :-
 ).
 
 % ai's double turn
-aiTurn(PreviousBoard, Board, Player1, Player2, Color, Adversary, GameStatus, BoardAI) :-
-    findall(FinalBoard, moveAI(PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus), AllBoards1),
-    getBoard(AllBoards1, NewFinalBoard),
-    display_game(NewFinalBoard, Player1, Color),
+aiTurn(PreviousBoard, Board, _Player1, Player2, Color, Adversary, GameStatus, BoardAI) :-
+    once(findall(FinalBoard, moveAI(PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus), AllBoards1)),
+    %write('20'),
+    %getBoard(AllBoards1, NewFinalBoard),
+    %write('21'),
+    %display_game(NewFinalBoard, Player1, Color),
+    %write('22'),
+    once(getAllOp(AllBoards1, PreviousBoard, Color, Adversary, GameStatus, _, AllBoards)),
+    %length(AllBoards, X),
+    %write('Lenght do allboards: '), %write(X),nl,
+    %write('23'),
+    %display1(AllBoards),
+    %write('24'),
+    once(getBoard(AllBoards, BoardAI)),
     %write('GS1: '), write(GameStatus), nl,
-    once(gameOverAI(NewFinalBoard, Adversary)),
-    findall(NewFinalFinalBoard, moveAI(Board, NewFinalBoard, NewFinalFinalBoard, Color, Adversary, GameStatus), AllBoards2),
-    getBoard(AllBoards2, BoardAI),
-    display_game(BoardAI, Player2, Adversary),
+    %once(gameOverAI(NewFinalBoard, Adversary)).
+    %findall(NewFinalFinalBoard, moveAI(Board, NewFinalBoard, NewFinalFinalBoard, Color, Adversary, GameStatus), AllBoards2),
+    %getBoard(AllBoards2, BoardAI),
+    once(display_game(BoardAI, Player2, Adversary)),
     %write('GS2: '), write(GameStatus), nl,
-    once(gameOverAI(BoardAI, Adversary)).
+    once(gameOverAI(BoardAI, Adversary, 1)).
 
-gameOverAI(Board, Adversary) :-
+getAllOp([], _, _, _, _, Board, Board) :- !.
+
+getAllOp([A|Resto], PreviousBoard, Color, Adversary, GameStatus, AllBoards, FinalistBoard) :-
+    %write('25'),
+    %length(Resto, X),
+    %write('Lenght: '), write(X),nl,
+    findall(NewFinalBoard, moveAI(PreviousBoard, A, NewFinalBoard, Color, Adversary, GameStatus), NewAllBoards),
+    join_lists(AllBoards, NewAllBoards, FinalAllBoards),
+    getAllOp(Resto, PreviousBoard, Color, Adversary, GameStatus, FinalAllBoards, FinalistBoard).
+
+%display1([]).
+%display1([A|Resto]) :-
+%display_game(A,1,black),
+%display1(Resto).
+
+gameOverAI(Board, Adversary, EndGame) :-
     findall(FinalBoard, pieceCounter(Board, FinalBoard, Adversary), AllPieces),
     length(AllPieces, Length),
     %write('HERE: '), write(Length), nl,
     Length == 3
     ;
+    EndGame == 1,
     Adversary == black,
     playerOneWins,
     !
     ;
+    EndGame == 1,
     Adversary == white,
     playerTwoWins,
-    !.
+    !
+    ;
+    EndGame == 0,
+    !,
+    fail.
 
 % standard white piece turn
 whiteTurn(PreviousBoard, Board, FinalBoard, Player, GameStatus, DisplayColor) :-
