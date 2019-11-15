@@ -25,7 +25,7 @@ setColumn(N, Piece, [X|Tail], [X|NewTail]) :-
 % ------------------------
 
 % main game loop
-game(Board, Player1, Player2, GameStatus, GameChoice) :-
+game(Board, Player1, Player2, GameStatus, GameChoice, GameLevel) :-
 (
     (
         GameChoice \== 3, % Player vs Player or Computer vs Player 
@@ -36,12 +36,12 @@ game(Board, Player1, Player2, GameStatus, GameChoice) :-
         write('3--\n'),
         once(whiteTurn(Board, BoardWhite1, BoardWhite2, Player2, GameStatus, black)),
         write('4--\n'),
-        gameOver(GameStatus, '1'),
+        once(gameOver(GameStatus, '1')),
         write('5--\n')
         ;
         GameChoice == 3, % Computer vs Computer
         write('6--\n'),
-        aiTurn(Board, Board, Player1, Player2, white, black, GameStatus, BoardWhite2),
+        aiTurn(Board, Board, Player1, Player2, white, black, GameStatus, BoardWhite2, GameLevel),
         write('8--\n')
     ),
     (
@@ -50,7 +50,7 @@ game(Board, Player1, Player2, GameStatus, GameChoice) :-
         write('10--\n'),
         once((BoardWhite1 = Board ; BoardWhite1 = BoardWhite1)), % Board for Computer vs Computer, BoardWhite1 for Player vs Computer
         write('11--\n'),
-        aiTurn(BoardWhite1, BoardWhite2, Player2, Player1, black, white, GameStatus, BoardNext),
+        aiTurn(BoardWhite1, BoardWhite2, Player2, Player1, black, white, GameStatus, BoardNext, GameLevel),
         write('12--\n')
         ;
         write('13--\n'),
@@ -62,32 +62,37 @@ game(Board, Player1, Player2, GameStatus, GameChoice) :-
         write('16--\n'),
         once(blackTurn(BoardWhite2, BoardBlack1, BoardNext, Player1, GameStatus, white)),
         write('17--\n'),
-        gameOver(GameStatus, '2'),
+        once(gameOver(GameStatus, '2')),
         write('18--\n')
     ),
     write('19--\n'),
-    game(BoardNext, Player1, Player2, GameStatus, GameChoice)
+    game(BoardNext, Player1, Player2, GameStatus, GameChoice, GameLevel)
     ;
     write('\n* Thank you for playing! *\n\n'),
     !
 ).
 
 % ai's double turn
-aiTurn(PreviousBoard, Board, _, Player2, Color, Adversary, GameStatus, BoardAI) :-
+aiTurn(PreviousBoard, Board, _, Player2, Color, Adversary, GameStatus, BoardAI, GameLevel) :-
     %write('1\n'),
     once(findall(FinalBoard, moveAI(PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus), AllBoards1)),
     %write('2\n'),
     once(value(AllBoards1, _, NewWin1, _, _, Adversary)),
     length(NewWin1, L),
     (
-        L \== 0,
-        %write('3\n'),
-        random_member(BoardAI, NewWin1)
+        (
+            GameLevel == 1,
+            random_member(BoardAI, AllBoards1)
+            ;
+            L \== 0,
+            %write('3\n'),
+            random_member(BoardAI, NewWin1)
+        )
         ;
         once(validMoves(AllBoards1, PreviousBoard, Color, Adversary, GameStatus, _, AllBoards)),
         once(value(AllBoards, _, NewWin, _, NewOther, Adversary)),
         %write('6\n'),
-        once(getBoard(NewWin, NewOther, BoardAI))
+        once(getBoard(NewWin, NewOther, BoardAI, GameLevel))
     ),
     %write('7\n'),
     once(display_game(BoardAI, Player2, Adversary)),
@@ -143,16 +148,12 @@ gameOverAI(Board, Adversary, EndGame) :-
     Adversary == white,
     write('22--\n'),
     playerTwoWins,
-    write('23--\n'),
-    !, 
-    fail
+    write('23--\n')
     ;
     % white wins because black has less than 3 pieces on the board
     EndGame == 1,
     Adversary == black,
-    playerOneWins,
-    !,
-    fail
+    playerOneWins
     ;
     % used to check if it's a winner board, but not ending the game
     !, 
@@ -187,11 +188,9 @@ gameOver(GameStatus, Player) :-
         ;
         write('30--\n'),
         Player == '1',
-        playerOneWins,
         write('31--\n'),
-        !
+        playerOneWins
         ;
         Player == '2',
-        playerTwoWins,
-        !
+        playerTwoWins
 ).

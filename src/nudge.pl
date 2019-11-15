@@ -14,5 +14,6 @@ nudge :-
     mainMenu(1),
         board_beg(Board),
     gameOption(GameChoice),
+    levelOption(LevelChoice),
         display_game(Board, 'One', white),
-        game(Board, 'One', 'Two', _GameStatus, GameChoice).
+        game(Board, 'One', 'Two', _GameStatus, GameChoice, LevelChoice).

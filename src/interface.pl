@@ -74,9 +74,25 @@ mainMenu(Choice) :-
         Char = '1' -> Choice = 1,
         nl
         ;
-        Char = '2' -> Choice = 2
+        Char = '2' -> halt
         ;
-        Char = '3' -> halt
+        nl,
+        write('Invalid input. Try again.\n'),
+        pressEnter,
+        nl,
+        mainMenu(Choice)
+).
+
+levelOption(Choice) :-
+    printLevel,
+    write('Option: '),
+    getChar(Char),
+    (
+        Char = '1' -> Choice = 1,
+        nl
+        ;
+        Char = '2' -> Choice = 2,
+        nl
         ;
         nl,
         write('Invalid input. Try again.\n'),
@@ -110,9 +126,22 @@ printGameOption :-
     clearScreen,
     write(' ------- ------- ------- ------- ------- \n'),
     write('|                                       |\n'),
+    write('| Game Mode                             |\n'),
+    write('|                                       |\n'),
     write('| 1. Player vs Computer                 |\n'),
     write('| 2. Player vs Player                   |\n'),
     write('| 3. Computer vs Computer               |\n'),
+    write('|                                       |\n'),
+    write(' ------- ------- ------- ------- ------- \n\n\n').
+
+    printLevel :-
+    clearScreen,
+    write(' ------- ------- ------- ------- ------- \n'),
+    write('|                                       |\n'),
+    write('| Difficulty Level                      |\n'),
+    write('|                                       |\n'),
+    write('| 1. Easy                               |\n'),
+    write('| 2. Hard                               |\n'),
     write('|                                       |\n'),
     write(' ------- ------- ------- ------- ------- \n\n\n').
 
@@ -123,8 +152,7 @@ printMainMenu :-
     write('| Nudge                                 |\n'),
     write('|                                       |\n'),
     write('| 1. Start Game                         |\n'),
-    write('| 2. Help                               |\n'),
-    write('| 3. Exit                               |\n'),
+    write('| 2. Exit                               |\n'),
     write('|                                       |\n'),
     write('|                                       |\n'),
     write('| Choose an option:                     |\n'),
