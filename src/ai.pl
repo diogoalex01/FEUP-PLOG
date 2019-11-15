@@ -10,29 +10,22 @@ checkMoveAI(PreviousBoard, Row, Column, Board, FinalBoard, Color, Adversary, Gam
     R is Row - 1,
     R > 0,
     checkRowAI(Row, R, Column, PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus)
-    %write('cima')
     ;
     % down movement
     R is Row + 1,
     R < 6,
     checkRowAI(Row, R, Column, PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus)
-    %write('baixo')
-
     ;
     % left movement
     C is Column - 1,
     C > 0,
     checkColumnAI(Row, C, Column, PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus)
-    %write('esq')
-
     ;
     % right movement
     C is Column + 1,
     C < 6,
     checkColumnAI(Row, C, Column, PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus)
-    %write('dir')
     ;
-    %write('\n troca\n'),
     fail.
 
 % checks if the horizontal move is valid

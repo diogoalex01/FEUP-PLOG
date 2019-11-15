@@ -5,11 +5,14 @@
 :- include('validateInput.pl').
 :- include('ai.pl').
 :- include('utilities.pl').
+
+:- use_module(library(lists)).
 :- use_module(library(random)).
+:- use_module(library(system)).
 
 nudge :-
     mainMenu(1),
-        board_mid(Board),
+        board_beg(Board),
     gameOption(GameChoice),
         display_game(Board, 'One', white),
         game(Board, 'One', 'Two', _GameStatus, GameChoice).

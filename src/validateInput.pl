@@ -57,10 +57,10 @@ checkPosition(Row, Column, Piece, Board) :-
 getRow(1, Column, Piece, [Row|_More]) :-
     getColumn(Column, Row, Piece).
 
-getRow(N, Column, Piece, [_Row|Remnant]) :-
+getRow(N, Column, Piece, [_Row|Tail]) :-
     N > 1,
     Next is N - 1,
-    getRow(Next, Column, Piece, Remnant).
+    getRow(Next, Column, Piece, Tail).
 
 % ------------
 
@@ -71,10 +71,10 @@ getColumn(1, [Current|_More], Piece) :-
         fail
 ).
 
-getColumn(N, [_X|Remnant], Piece) :-
+getColumn(N, [_X|Tail], Piece) :-
     N > 1,
     Next is N - 1,
-    getColumn(Next, Remnant, Piece).
+    getColumn(Next, Tail, Piece).
 
 % check move possibilities
 % ------------------------

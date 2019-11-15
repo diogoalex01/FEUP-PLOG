@@ -31,8 +31,20 @@ genPosition(Row, Column) :-
   member(Column, [1, 2, 3, 4, 5]).
   
 % randomly selects one of the possible boards
-getBoard(PossibleBoard, SelectedBoard) :-
-  random_select(SelectedBoard, PossibleBoard, _).
+getBoard(Win, Other, BoardAI) :-
+  length(Win, X),
+  (
+    %write('30'),
+    %write('\n Win: '), write(X), nl,
+    %write('31'),
+    X \== 0,
+    %write('32'),
+    random_select(BoardAI, Win, _)
+    ;
+    %write('33'),
+    random_select(BoardAI, Other, _)
+    %write('34')
+).
 
 % finds coordinates of new positions for nudges (symmetric)
 findCoordinates(Row, Column, ARow, AColumn, NRow, NColumn) :-
@@ -45,4 +57,5 @@ pieceCounter(Board, FinalBoard, Color) :-
     FinalBoard = Board.
 
 join_lists([], L, L).
-join_lists([X|L1], L2, [X|L3]):- join_lists(L1, L2, L3). 
+join_lists([X|L1], L2, [X|L3]) :- 
+  join_lists(L1, L2, L3).
