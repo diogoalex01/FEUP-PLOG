@@ -29,43 +29,25 @@ game(Board, Player1, Player2, GameStatus, GameChoice, GameLevel) :-
 (
     (
         GameChoice \== 3, % Player vs Player or Computer vs Player 
-        write('1--\n'),
         once(whiteTurn(Board, Board, BoardWhite1, Player1, GameStatus, white)),   
-        write('2--\n'),
-        once(gameOver(GameStatus, '1')),
-        write('3--\n'),
+        once(game_over(GameStatus, '1')),
         once(whiteTurn(Board, BoardWhite1, BoardWhite2, Player2, GameStatus, black)),
-        write('4--\n'),
-        once(gameOver(GameStatus, '1')),
-        write('5--\n')
+        once(game_over(GameStatus, '1'))
         ;
         GameChoice == 3, % Computer vs Computer
-        write('6--\n'),
-        aiTurn(Board, Board, Player1, Player2, white, black, GameStatus, BoardWhite2, GameLevel),
-        write('8--\n')
+        aiTurn(Board, Board, Player1, Player2, white, black, GameStatus, BoardWhite2, GameLevel)
     ),
     (
-        write('9--\n'),
         GameChoice \== 2, % Computer vs Player or Computer vs Computer
-        write('10--\n'),
         once((BoardWhite1 = Board ; BoardWhite1 = BoardWhite1)), % Board for Computer vs Computer, BoardWhite1 for Player vs Computer
-        write('11--\n'),
-        aiTurn(BoardWhite1, BoardWhite2, Player2, Player1, black, white, GameStatus, BoardNext, GameLevel),
-        write('12--\n')
+        aiTurn(BoardWhite1, BoardWhite2, Player2, Player1, black, white, GameStatus, BoardNext, GameLevel)
         ;
-        write('13--\n'),
         GameChoice == 2, % Player vs Player
-        write('14--\n'),
         once(blackTurn(BoardWhite1, BoardWhite2, BoardBlack1, Player2, GameStatus, black)),
-        write('15--\n'),
-        once(gameOver(GameStatus, '2')),
-        write('16--\n'),
+        once(game_over(GameStatus, '2')),
         once(blackTurn(BoardWhite2, BoardBlack1, BoardNext, Player1, GameStatus, white)),
-        write('17--\n'),
-        once(gameOver(GameStatus, '2')),
-        write('18--\n')
+        once(game_over(GameStatus, '2'))
     ),
-    write('19--\n'),
     game(BoardNext, Player1, Player2, GameStatus, GameChoice, GameLevel)
     ;
     write('\n* Thank you for playing! *\n\n'),
@@ -74,90 +56,31 @@ game(Board, Player1, Player2, GameStatus, GameChoice, GameLevel) :-
 
 % ai's double turn
 aiTurn(PreviousBoard, Board, _, Player2, Color, Adversary, GameStatus, BoardAI, GameLevel) :-
-    %write('1\n'),
+    % finds all possible plays with just one movement
     once(findall(FinalBoard, moveAI(PreviousBoard, Board, FinalBoard, Color, Adversary, GameStatus), AllBoards1)),
-    %write('2\n'),
+    % if there's any chance to win, those boards are put on NewWin1
     once(value(AllBoards1, _, NewWin1, _, _, Adversary)),
     length(NewWin1, L),
     (
-        (
-            GameLevel == 1,
-            random_member(BoardAI, AllBoards1)
-            ;
-            L \== 0,
-            %write('3\n'),
-            random_member(BoardAI, NewWin1)
-        )
+        % if on hard level, it makes a win move if possible
+        GameLevel == 2,
+        L \== 0,
+        random_member(BoardAI, NewWin1)
         ;
-        once(validMoves(AllBoards1, PreviousBoard, Color, Adversary, GameStatus, _, AllBoards)),
+        % if on easy level or no winning moves found with just one movement, it finds all possible plays with a second movement
+        once(valid_moves(AllBoards1, PreviousBoard, Color, Adversary, GameStatus, _, AllBoards)),
         once(value(AllBoards, _, NewWin, _, NewOther, Adversary)),
-        %write('6\n'),
+        % according to the gameLevel it either chooses randomnly or a winning movement
         once(getBoard(NewWin, NewOther, BoardAI, GameLevel))
     ),
-    %write('7\n'),
     once(display_game(BoardAI, Player2, Adversary)),
     (
-        %write('8--\n'),
-        once(gameOverAI(BoardAI, Adversary, 1))
-        %write('9--\n')
-        %sleep(1)
+        once(gameOverAI(BoardAI, Adversary, 1)),
+        sleep(1)
         ;
-        %write('10--\n'),
         !,
         fail
-    ).
-
-value([], Board, Board, Board1, Board1, _) :- !.
-value([Head|Tail], Win, NewWin, Other, NewOther, Adversary) :-
-    (
-        %write('\n24\n'),
-        gameOverAI(Head, Adversary, 0),
-        %write('25\n'),
-        join_lists(Other, [Head], Other2),
-        join_lists(Win, [], Win2)
-        %write('26\n')
-        ;
-        %write('27\n'),
-        join_lists(Win, [Head], Win2),
-        join_lists(Other, [], Other2)
-        %write('28\n\n')
-    ),
-    value(Tail, Win2, NewWin, Other2, NewOther, Adversary).
-
-validMoves([], _, _, _, _, Board, Board) :- !.
-validMoves([Head|Tail], PreviousBoard, Color, Adversary, GameStatus, AllBoards, FinalistBoard) :-
-    findall(NewFinalBoard, moveAI(PreviousBoard, Head, NewFinalBoard, Color, Adversary, GameStatus), NewAllBoards),
-    join_lists(AllBoards, NewAllBoards, FinalAllBoards),
-    validMoves(Tail, PreviousBoard, Color, Adversary, GameStatus, FinalAllBoards, FinalistBoard).
-
-%display1([]).
-%display1([Head|Tail]) :-
-%    display_game(Head, '1', black), nl,
-%    display1(Tail).
-
-gameOverAI(Board, Adversary, EndGame) :-
-    % finds number of pieces of the opponent on the board
-    findall(FinalBoard, pieceCounter(Board, FinalBoard, Adversary), AllPieces),
-    length(AllPieces, Length),
-    Length == 3
-    ;
-    % black wins because white has less than 3 pieces on the board
-    write('20--\n'),
-    EndGame == 1,
-    write('21--\n'),
-    Adversary == white,
-    write('22--\n'),
-    playerTwoWins,
-    write('23--\n')
-    ;
-    % white wins because black has less than 3 pieces on the board
-    EndGame == 1,
-    Adversary == black,
-    playerOneWins
-    ;
-    % used to check if it's a winner board, but not ending the game
-    !, 
-    fail.
+).
 
 % standard white piece turn
 whiteTurn(PreviousBoard, Board, FinalBoard, Player, GameStatus, DisplayColor) :-
@@ -181,16 +104,14 @@ move(PreviousBoard, Board, FinalBoard, Color, Adversary, Player, GameStatus, Dis
         fail
 ).
 
-% checks whether the game is over (GameStatus \== 1) and prints the winner (player)
-gameOver(GameStatus, Player) :-
+% checks whether the game is over (GameStatus \== 1) and prints the winner (Winner)
+game_over(GameStatus, Winner) :-
     (   
         GameStatus \== 1
         ;
-        write('30--\n'),
-        Player == '1',
-        write('31--\n'),
+        Winner == '1',
         playerOneWins
         ;
-        Player == '2',
+        Winner == '2',
         playerTwoWins
 ).

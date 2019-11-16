@@ -34,35 +34,32 @@ genPosition(Row, Column) :-
 getBoard(Win, Other, BoardAI, GameLevel) :-
   length(Win, X),
   (
+    % easy level - random board chosen
     GameLevel == 1,
     join_lists(Win, Other, Boards),
     random_select(BoardAI, Boards, _)
     ;
+    % hard level - random winning board chosen and if there are none, another random board is chosen
     (
-    %write('30'),
-    %write('\n Win: '), write(X), nl,
-    %write('31'),
-    X \== 0,
-    %write('32'),
-    random_select(BoardAI, Win, _)
-    ;
-    %write('33'),
-    random_select(BoardAI, Other, _)
-    %write('34')
+      X \== 0,
+      random_select(BoardAI, Win, _)
+      ;
+      random_select(BoardAI, Other, _)
     )
-  ).
-
+).
 
 % finds coordinates of new positions for nudges (symmetric)
 findCoordinates(Row, Column, ARow, AColumn, NRow, NColumn) :-
   NRow is 2 * ARow - Row,
   NColumn is 2 * AColumn - Column.
 
+% counts the number of pieces with a given Color present on that Board
 pieceCounter(Board, FinalBoard, Color) :-
     genPosition(Row, Column),
     checkPosition(Row, Column, Color, Board),
     FinalBoard = Board.
 
+% appends two lists into another list
 join_lists([], L, L).
 join_lists([X|L1], L2, [X|L3]) :- 
   join_lists(L1, L2, L3).

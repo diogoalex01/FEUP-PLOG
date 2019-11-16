@@ -1,4 +1,4 @@
-% to run, 'nudge.'
+% to run, 'play.'
 
 :- include('interface.pl').
 :- include('logic.pl').
@@ -10,10 +10,10 @@
 :- use_module(library(random)).
 :- use_module(library(system)).
 
-nudge :-
+play :-
     mainMenu(1),
         board_beg(Board),
-    gameOption(GameChoice),
     levelOption(LevelChoice),
+    gameOption(GameChoice),
         display_game(Board, 'One', white),
         game(Board, 'One', 'Two', _GameStatus, GameChoice, LevelChoice).

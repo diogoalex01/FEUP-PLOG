@@ -71,10 +71,12 @@ mainMenu(Choice) :-
     write('Option: '),
     getChar(Char),
     (
-        Char = '1' -> Choice = 1,
+        Char = '1',
+        Choice = 1,
         nl
         ;
-        Char = '2' -> halt
+        Char = '2',
+        halt
         ;
         nl,
         write('Invalid input. Try again.\n'),
@@ -88,10 +90,12 @@ levelOption(Choice) :-
     write('Option: '),
     getChar(Char),
     (
-        Char = '1' -> Choice = 1,
+        Char = '1',
+        Choice = 1,
         nl
         ;
-        Char = '2' -> Choice = 2,
+        Char = '2',
+        Choice = 2,
         nl
         ;
         nl,
@@ -106,13 +110,16 @@ gameOption(Choice) :-
     write('Option: '),
     getChar(Char),
     (
-        Char = '1' -> Choice = 1,
+        Char = '1',
+        Choice = 1,
         nl
         ;
-        Char = '2' -> Choice = 2,
+        Char = '2',
+        Choice = 2,
         nl
         ;
-        Char = '3' -> Choice = 3,
+        Char = '3',
+        Choice = 3,
         nl
         ;
         nl,
@@ -134,7 +141,7 @@ printGameOption :-
     write('|                                       |\n'),
     write(' ------- ------- ------- ------- ------- \n\n\n').
 
-    printLevel :-
+printLevel :-
     clearScreen,
     write(' ------- ------- ------- ------- ------- \n'),
     write('|                                       |\n'),

@@ -25,12 +25,12 @@ validateRowInput(Row) :-
 readColumn(Column, Status) :-
     write(Status),
     write(' Column '),
-    inputColumn(Temp_Column),
-    validateColumnInput(Temp_Column, Column),
+    inputColumn(TempColumn),
+    validateColumnInput(TempColumn, Column),
     write('\n').
 
-inputColumn(Temp_Column) :-
-    read(Temp_Column).
+inputColumn(TempColumn) :-
+    read(TempColumn).
 
 validateColumnInput('A', Column) :-
     Column = 1.
@@ -82,15 +82,10 @@ getColumn(N, [_X|Tail], Piece) :-
 % verifies if a given move (CRow, CColumn) -> (NRow, NColumn) is valid
 checkMove(CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, PreviousBoard, GameStatus) :-
     (
-        %write('1--\n'),
         once(checkSamePosition(CRow, NRow, CColumn, NColumn)),
-        %write('2--\n'),
         once(checkNudge(CRow, CColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board, FinalBoard, 0, GameStatus, 1)),
-        %write('3--\n'),
         once(checkDiagonal(CRow, CColumn, NRow, NColumn)),
-        %write('4--\n'),
         once(checkReturnPosition(PreviousBoard, FinalBoard, 1))
-        %write('5--\n')
         ;
         fail
 ).
@@ -193,9 +188,11 @@ checkNudge(IRow, IColumn, CRow, CColumn, NRow, NColumn, Color, Adversary, Board,
         checkNudge(IRow, IColumn, NRow, NColumn, NNRow, NNColumn, Color, Adversary, Board, MidBoard, Next, GameStatus, MessageOn),
         setPiece(IRow, IColumn, '     ', MidBoard, FinalBoard)
         ;
+        % invalid nudge with warning message being displayed
         MessageOn == 1,
         write('Invalid Nudge!\n'),
         fail
         ;
+        % invalid nudge without warning message being displayed
         fail
 ).
