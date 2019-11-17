@@ -31,7 +31,7 @@ genPosition(Row, Column) :-
   member(Column, [1, 2, 3, 4, 5]).
   
 % randomly selects one of the possible boards
-getBoard(Win, Other, BoardAI, GameLevel) :-
+choose_move(Win, Other, BoardAI, GameLevel) :-
   length(Win, X),
   (
     % easy level - random board chosen

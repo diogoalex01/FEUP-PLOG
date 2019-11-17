@@ -71,7 +71,7 @@ aiTurn(PreviousBoard, Board, _, Player2, Color, Adversary, GameStatus, BoardAI, 
         once(valid_moves(AllBoards1, PreviousBoard, Color, Adversary, GameStatus, _, AllBoards)),
         once(value(AllBoards, _, NewWin, _, NewOther, Adversary)),
         % according to the gameLevel it either chooses randomnly or a winning movement
-        once(getBoard(NewWin, NewOther, BoardAI, GameLevel))
+        once(choose_move(NewWin, NewOther, BoardAI, GameLevel))
     ),
     once(display_game(BoardAI, Player2, Adversary)),
     (
