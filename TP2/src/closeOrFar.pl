@@ -1,9 +1,15 @@
 % to run, 'closeOrFar.'
 
+:- include('interface.pl').
+:- include('utilities.pl').
+
 :- use_module(library(clpfd)). % CLP(FD) SICStus library
 :- use_module(library(lists)).
 
-closeOrFar :- .
+closeOrFar :- 
+    mainMenu,
+    board_beg(Board),
+    display_game(Board).
 
 subList(StartPos, EndPos, WholeList, SubList) :-
     subList1(1, StartPos, EndPos, WholeList, SubList).
