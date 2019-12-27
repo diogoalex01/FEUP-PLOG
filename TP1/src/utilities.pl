@@ -27,7 +27,7 @@ checkLimits(Row, Column) :-
 
 % generates sequential value for the Row and Column argument
 genPosition(Row, Column) :-
-  member(Row, [1, 2, 3, 4, 5]),
+  member(Row, [1, 2, 3, 4, 5, 6]),
   member(Column, [1, 2, 3, 4, 5]).
   
 % randomly selects one of the possible boards
