@@ -1,49 +1,52 @@
 board_beg(
-[
-    [' F ', '   ', '   ', '   ', '   '],
-    ['   ', '   ', '   ', ' F ', '   '],
-    ['   ', '   ', ' C ', '   ', '   '],
-    ['   ', '   ', '   ', '   ', ' C '],
-    ['   ', ' F ', '   ', '   ', '   '],
-    ['   ', '   ', ' F ', '   ', '   '] 
-]).
+[ 
+ '     ', 'close', '     ', '     ', '     ',
+ '     ', 'close', '     ', '     ', '     ',
+ '     ', ' far ', '     ', ' far ', '     ',
+ '     ', '     ', '     ', '     ', '     ',
+ '     ', ' far ', '     ', '     ', '     '
+]
+).
 
-display_border :-
-    write(' --- ----- ----- ----- ----- -----').
+display_border(0).
+display_border(N) :-
+    Next is N - 1,
+    write(' ------ '),
+    display_border(Next).
 
 display_cell(Cell) :-
     write(Cell),
     write(' |'),
     write(' ').
 
-display_row([]) :-
+display_row([], N) :-
     nl,
-    display_border,
+    display_border(N),
     nl.
 
-display_row([Head|Tail]) :-
+display_row([Head|Tail], N) :-
     display_cell(Head),
-    display_row(Tail).
+    display_row(Tail, N).
 
 display_board([], _).
 display_board([Head|Tail], N) :-
-    format('| ~D | ', [N]),
-    display_row(Head),
-    N1 is N + 1,
-    display_board(Tail, N1).
+    write('| '),
+    display_row(Head, N),
+    display_board(Tail, N).
 
 display_game(Board) :-
-    write('     ----- ----- ----- ----- -----\n'),
-    write('    |  A  -  B  -  C  -  D  -  E  |\n'),
-    display_border,
+    length(Board, L),
+    N is round(sqrt(L)),
+    divide(Board, N, NewBoard),
+    display_border(N),
     nl,
-    display_board(Board, 1), % 1 - starting row number
+    display_board(NewBoard, N),
     nl.
 
-mainMenu :-
-    printMainMenu,
+main_menu :-
+    print_main_menu,
     write('Option: '),
-    getChar(Char),
+    get_character(Char),
     (
         Char = '1',
         nl
@@ -53,13 +56,13 @@ mainMenu :-
         ;
         nl,
         write('Invalid input. Try again.\n'),
-        pressEnter,
+        press_enter,
         nl,
-        mainMenu
+        main_menu
 ).
 
-printMainMenu :-
-    clearScreen,
+print_main_menu :-
+    clear_screen,
     write(' ------- ------- ------- ------- ------- \n'),
     write('|                                       |\n'),
     write('| Nudge                                 |\n'),

@@ -1,45 +1,77 @@
-clearScreen :-
+clear_screen :-
 	write('\33\[2J').
 
-getChar(Input) :-
+get_character(Input) :-
   get_char(Input),
   get_char(_).
 
-pressEnter :-
+press_enter :-
   write('Press <ENTER> to continue.\n\n'),
   get_char(_).
 
 % pieces
 % ------------------------
 
-setPiece(Row, Column, Piece, TabIn, TabOut) :-
-    setRow(Row, Column, Piece, TabIn, TabOut).
+set_piece(Row, Column, Piece, TabIn, TabOut) :-
+  set_row(Row, Column, Piece, TabIn, TabOut).
 
 % rows
 % ------------------------
 
-setRow(1, Column, Piece, [Row|More], [NovaRow|More]) :-
-    setColumn(Column, Piece, Row, NovaRow).
+set_row(1, Column, Piece, [Row|More], [NovaRow|More]) :-
+  set_column(Column, Piece, Row, NovaRow).
 
-setRow(N, Column, Piece, [Row|Tail], [Row|NewTail]) :-
-    N > 1,
-    Next is N - 1,
-    setRow(Next, Column, Piece, Tail, NewTail).
+set_row(N, Column, Piece, [Row|Tail], [Row|NewTail]) :-
+  N > 1,
+  Next is N - 1,
+  set_row(Next, Column, Piece, Tail, NewTail).
 
 % columns
 % ------------------------
 
-setColumn(1, Piece, [_|More], [Piece|More]).
+set_column(1, Piece, [_|More], [Piece|More]).
 
-setColumn(N, Piece, [X|Tail], [X|NewTail]) :-
-    N > 1,
-    Next is N - 1,
-    setColumn(Next, Piece, Tail, NewTail).
+set_column(N, Piece, [X|Tail], [X|NewTail]) :-
+  N > 1,
+  Next is N - 1,
+  set_column(Next, Piece, Tail, NewTail).
 
 % generates sequential value for the Row and Column argument
-genPosition(Row, Column) :-
+gen_position(Row, Column) :-
   member(Row, [1, 2, 3, 4, 5, 6]),
   member(Column, [1, 2, 3, 4, 5]).
 
-selRandom(ListOfVars, Var, Rest) :-
-  random_select(Var, ListOfVars, Rest).
+%%
+
+%get_row(1, [_Row|_More]).
+%get_row(N, [_Row|Tail]) :-
+%  N > 1,
+%  Next is N - 1,
+%  get_row(Next, Tail).
+
+% ------------
+
+%get_column(1, [_Current|_More]).
+%get_column(N, [_X|Tail]) :-
+%  N > 1,
+%  Next is N - 1,
+%  get_column(Next, Tail).
+
+% ------------
+
+split_at(N, List, [H|[T]]) :- append(H, T, List), length(H, N).
+
+divide([], _, _).
+divide(List, Split, [Chunk|Rest]) :-
+  split_at(Split, List, [Chunk, Remainder]),
+  divide(Remainder, Split, Rest).
+
+my_sel(Var, _, BB0, BB1) :-
+  fd_set(Var, Set),
+  fdset_to_list(Set, List),
+  random_member(Value, List),
+  ( 
+      first_bound(BB0, BB1), Var#= Value
+      ;
+      later_bound(BB0, BB1), Var#\= Value 
+  ).
