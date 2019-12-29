@@ -59,11 +59,13 @@ gen_position(Row, Column) :-
 
 % ------------
 
-split_at(N, List, [H|[T]]) :- append(H, T, List), length(H, N).
+split_at(N, List, [H|[T]]) :-
+  append(H, T, List),
+  length(H, N).
 
 divide([], _, _).
-divide(List, Split, [Chunk|Rest]) :-
-  split_at(Split, List, [Chunk, Remainder]),
+divide(List, Split, [Head|Rest]) :-
+  split_at(Split, List, [Head, Remainder]),
   divide(Remainder, Split, Rest).
 
 my_sel(Var, _, BB0, BB1) :-
@@ -71,7 +73,13 @@ my_sel(Var, _, BB0, BB1) :-
   fdset_to_list(Set, List),
   random_member(Value, List),
   ( 
-      first_bound(BB0, BB1), Var#= Value
-      ;
-      later_bound(BB0, BB1), Var#\= Value 
+    first_bound(BB0, BB1),
+    Var #= Value
+    ;
+    later_bound(BB0, BB1),
+    Var #\= Value
   ).
+
+replace(_, _, [], []).
+replace(O, R, [O|T], [R|T2]) :- replace(O, R, T, T2).
+replace(O, R, [H|T], [H|T2]) :- H \= O, replace(O, R, T, T2).

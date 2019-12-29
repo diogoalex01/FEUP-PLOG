@@ -11,10 +11,13 @@ closeOrFar :-
     %mainMenu,
     board_beg(Board),
     display_game(Board),
-    find_CF(10).
+    find_CF(10, _).
     %display_game(Board).
 
-find_CF(N) :-
+find_CF(N, Vars) :-
+    %replace('     ', _, Vars, FVars),
+    %replace('close', 1, FVars, FFVars),
+    %replace(' far ', 2, FFVars, FFFVars),
     Number is N * N,
     length(Vars, Number),
     domain(Vars, 0, 2),
@@ -24,7 +27,10 @@ find_CF(N) :-
     column_constraints(N, Vars, N),
             write('1.3---\n'),
     labeling([value(my_sel)], Vars),
-    display_game(Vars), nl.
+    replace(0, '     ', Vars, FVars),
+    replace(1, 'close', FVars, FFVars),
+    replace(2, ' far ', FFVars, FFFVars),
+    display_game(FFFVars), nl.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
