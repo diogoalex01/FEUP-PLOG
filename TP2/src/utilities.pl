@@ -52,6 +52,10 @@ replace_at_index([H|T], N, E, [H|R]) :-
     Next is N - 1,
     replace_at_index(T, Next, E, R).
 
+% makes empty cells on the board ('     ') a variable
+make_var('     ', _) :- !.
+make_var(X, X).
+
 % -------- Sub List of a List -------- %
 
 sub_list(StartPos, EndPos, WholeList, SubList) :-
