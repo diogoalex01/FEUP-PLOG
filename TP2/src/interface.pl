@@ -46,22 +46,27 @@ display_game(Board) :-
     display_board(NewBoard, N),
     nl.
 
-main_menu :-
+main_menu(Option) :-
     print_main_menu,
     write('Option: '),
-    get_character(Char),
+    get_character(Choice),
     (
-        Char = '1',
+        Choice == '1',
+        Option = 1,
         nl
         ;
-        Char = '2',
+        Choice == '2',
+        Option = 2,
+        nl
+        ;
+        Choice == '3',
         halt
         ;
         nl,
         write('Invalid input. Try again.\n'),
         press_enter,
         nl,
-        main_menu
+        main_menu(Option)
 ).
 
 print_main_menu :-
@@ -70,9 +75,24 @@ print_main_menu :-
     write('|                                       |\n'),
     write('| Nudge                                 |\n'),
     write('|                                       |\n'),
-    write('| 1. Start Game                         |\n'),
-    write('| 2. Exit                               |\n'),
+    write('| 1. Check Board                        |\n'),
+    write('| 2. Generate Board                     |\n'),
+    write('| 3. Exit                               |\n'),
     write('|                                       |\n'),
     write('|                                       |\n'),
     write('| Choose an option:                     |\n'),
     write(' ------- ------- ------- ------- ------- \n\n\n').
+
+ask_size(N) :-
+    write('Size of the board (N x N): '),
+    read(NN),
+    (
+        NN > 3,
+        NN < 20,
+        N = NN
+        ;
+        nl,
+        ask_size(N)
+    ),
+    nl
+.
