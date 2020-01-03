@@ -17,7 +17,7 @@ split_at(N, List, [H|[T]]) :-
   length(H, N).
 
 % divides List in Split fragments
-divide([], _, []).
+divide([], _, _).
 divide(List, Split, [Head|Rest]) :-
   split_at(Split, List, [Head, Remainder]),
   divide(Remainder, Split, Rest).
@@ -74,3 +74,7 @@ sub_list_aux(N, StartPos, EndPos, [_|Rest], More) :-
     N < StartPos,
     Next is N + 1,
     sub_list_aux(Next, StartPos, EndPos, Rest, More).
+
+flatten([], []).
+flatten([H|T], R):- \+(is_list(H)), flatten(T, R1), append([H], R1, R).
+flatten([H|T], R):- is_list(H), flatten(T, R1), append(H, R1, R).
