@@ -17,7 +17,7 @@ split_at(N, List, [H|[T]]) :-
   length(H, N).
 
 % divides List in Split fragments
-divide([], _, _).
+divide([], _, []).
 divide(List, Split, [Head|Rest]) :-
   split_at(Split, List, [Head, Remainder]),
   divide(Remainder, Split, Rest).
