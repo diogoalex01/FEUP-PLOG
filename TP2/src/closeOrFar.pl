@@ -15,8 +15,11 @@ closeOrFar :-
 % checks if a given board has a Close&Far solution
 find_CF(1, FFFFFFVars) :-
     (
-        board_seven(Vars),
-        replaceAll('close', ' far ', '     ', 1, 2, '     ', Vars, FVars),
+        % display the given (unsolved) Close&Far
+        write('\nGIVEN Close&Far:\n'),
+        board_nine(Vars), % given Close&Far board, template at interface %
+        display_game(Vars),
+        replaceAll('C', 'F', ' ', 1, 2, ' ', Vars, FVars),
         maplist(make_vars, FVars, FFVars),
 
         % variables and domains
@@ -33,21 +36,26 @@ find_CF(1, FFFFFFVars) :-
         length(FFFFVars, L),
         length(FFFFFVars, R3),
 
+        % list FFVars to matrix FFFVars
         divide(FFVars, N, FFFVars),
 
         % contraints
         row_constraints(N, FFFVars, [], NF, R4),
         column_constraints(N, FFFVars, NF, NNF, R4),
 
+        % matrix FFFVars to list FFFFVars
         flatten_list(FFFVars, FFFFVars),
         append(NNF, FFFFVars, FFFFFVars),
 
         % solution search
         labeling([value(my_sel)], FFFFFVars),
 
-        split_at(R2, FFFFFVars, [_,T]),
-        replaceAll(0, 1, 2, '     ', 'close', ' far ', T, FFFFFFVars),
-        write('\nSOLVABLE Close&Far:\n')
+        % take just the solved Close&Far to T
+        split(R2, FFFFFVars, [_,T]),
+        replaceAll(0, 1, 2, ' ', 'C', 'F', T, FFFFFFVars),
+
+        % display the given (solved) Close&Far
+        write('\nSOLVED Close&Far:\n')
         ;
         write('\n* There\'s no solution for the given board. *')
     ).
@@ -70,23 +78,31 @@ find_CF(2, FFFFFVars) :-
     length(FFVars, L),
     length(FFFVars, R3),
 
+    % list Vars to matrix FVars
     divide(Vars, N, FVars),
 
     % contraints
     row_constraints(N, FVars, [], NF, R4),
     column_constraints(N, FVars, NF, NNF, R4),
 
+    % matrix FVars to list FFVars
     flatten_list(FVars, FFVars),
     append(NNF, FFVars, FFFVars),
 
     % solution search
     labeling([value(my_sel)], FFFVars),
 
-    split_at(R2, FFFVars, [_,T]),
-    replaceAll(0, 1, 2, '     ', 'close', ' far ', T, FFFFVars),
+    % take just the solved Close&Far to T
+    split(R2, FFFVars, [_,T]),
+    replaceAll(0, 1, 2, ' ', 'C', 'F', T, FFFFVars),
+
+    % display the generated (solved) Close&Far
     write('\nSOLVED Close&Far:\n'),
     display_game(FFFFVars),
-    unsolve(FFFFVars, _, FFFFFVars, L, L),
+
+    % generate the respective unsolved Close&Far (randonmly)
+    I is round(L / 2),
+    unsolve(FFFFVars, _, FFFFFVars, L, I),
     write('\nUNSOLVED Close&Far:\n').
 
 % -------- Row Constraints -------- %
@@ -99,9 +115,9 @@ row_constraints(1, Vars, L, NL, N) :-
 row_constraints(Index, Vars, L, NL, N) :-
     nth1(Index, Vars, Row),
     global_cardinality(Row, [0-N, 1-2, 2-2]),
-    check_proximity(Row, L, NNL),
+    check_proximity(Row, L, TL),
     NewIndex is Index - 1,
-    row_constraints(NewIndex, Vars, NNL, NL, N).
+    row_constraints(NewIndex, Vars, TL, NL, N).
 
 % ------ Columns Constraints ------ %
 
@@ -113,13 +129,13 @@ column_constraints(1, Vars, L, NL, N) :-
 column_constraints(Index, Vars, L, NL, N) :-
     get_column(Vars, Index, Column),
     global_cardinality(Column, [0-N, 1-2, 2-2]),
-    check_proximity(Column, L, NNL),
+    check_proximity(Column, L, TL),
     NewIndex is Index - 1,
-    column_constraints(NewIndex, Vars, NNL, NL, N).
+    column_constraints(NewIndex, Vars, TL, NL, N).
 
 % --------------------------------- %
 
-% checks is the 'close' and 'far' elements are correctly placed
+% checks is the 'C' and 'far' elements are correctly placed
 check_proximity(L, NL, NNL) :-
     element(C1, L, 1),
     element(C2, L, 1),
@@ -139,6 +155,19 @@ check_proximity(L, NL, NNL) :-
 unsolve(NNBoard, _, NNBoard, _, 0).
 unsolve(Board, NBoard, NNBoard, L, N) :-
     random(1, L, R),
-    replace_at_index(Board, R, '     ', NBoard),
+    replace_at_index(Board, R, ' ', NBoard),
     NN is N - 1,
     unsolve(NBoard, _, NNBoard, L, NN).
+
+% randomnly choose a solution on labelling
+my_sel(Var, _, BB0, BB1) :-
+  fd_set(Var, Set),
+  fdset_to_list(Set, List),
+  random_member(Value, List),
+  ( 
+    first_bound(BB0, BB1),
+    Var #= Value
+    ;
+    later_bound(BB0, BB1),
+    Var #\= Value
+  ).
