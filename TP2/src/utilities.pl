@@ -48,33 +48,26 @@ replaceAll(B1, B2, B3, A1, A2, A3, Vars, FFFVars) :-
 % replaces an element E at a given index N
 replace_at_index([_|T], 1, E, [E|T]).
 replace_at_index([H|T], N, E, [H|R]) :-
-    N > 1,
-    Next is N - 1,
-    replace_at_index(T, Next, E, R).
+  N > 1,
+  Next is N - 1,
+  replace_at_index(T, Next, E, R).
 
 % makes empty cells on the board ('     ') a variable
-make_var('     ', _) :- !.
-make_var(X, X).
+make_vars('     ', _) :- !.
+make_vars(X, X).
 
-% -------- Sub List of a List -------- %
+% -------- Lists -------- %
 
-sub_list(StartPos, EndPos, WholeList, SubList) :-
-sub_list_aux(1, StartPos, EndPos, WholeList, SubList).
+flatten_list([], []).
+flatten_list([H|T], L) :- \+(is_list(H)), flatten_list(T, NL), append([H], NL, L).
+flatten_list([H|T], L) :- is_list(H), flatten_list(T, NL), append(H, NL, L).
 
-sub_list_aux(EndPos, _, EndPos, [X|_], [X]).
-sub_list_aux(StartPos, StartPos, EndPos, [X|Rest], [X|More]) :-
-    Next is StartPos + 1,
-    sub_list_aux(Next, StartPos, EndPos, Rest, More).
-sub_list_aux(N, StartPos, EndPos, [X|Rest], [X|More]) :-
-    N > StartPos,
-    N < EndPos,
-    Next is N + 1,
-    sub_list_aux(Next, StartPos, EndPos, Rest, More).
-sub_list_aux(N, StartPos, EndPos, [_|Rest], More) :-
-    N < StartPos,
-    Next is N + 1,
-    sub_list_aux(Next, StartPos, EndPos, Rest, More).
+get_column([], _, []).
+get_column([H|T], Index, [R|X]) :-
+  get_row(H, Index, R),
+  get_column(T, Index, X).
 
-flatten([], []).
-flatten([H|T], R):- \+(is_list(H)), flatten(T, R1), append([H], R1, R).
-flatten([H|T], R):- is_list(H), flatten(T, R1), append(H, R1, R).
+get_row([H|_], 1, H) :- !.
+get_row([_|T], Index, X) :-
+  NIndex is Index - 1,
+  get_row(T, NIndex, X).
