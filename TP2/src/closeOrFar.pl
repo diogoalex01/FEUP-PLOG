@@ -17,7 +17,7 @@ find_CF(1, FFFFFFVars) :-
     (
         % display the given (unsolved) Close&Far
         write('\n GIVEN Close&Far:\n'),
-        board_eleven(Vars), % given Close&Far board, template at interface %
+        board_six(Vars), % given Close&Far board, template at interface %
         once(display_game(Vars)),
         replaceAll('C', 'F', ' ', 1, 2, ' ', Vars, FVars),
         maplist(make_vars, FVars, FFVars),
@@ -43,8 +43,13 @@ find_CF(1, FFFFFFVars) :-
         % contraints
         row_constraints(N, FFFVars, [], NF, R4),
         column_constraints(N, FFFVars, NF, NNF, R4),
-        print_time('PostingConstraints: '),
-
+       
+        write('-----------\n'),
+        write('Statistics |\n'),
+        write('-------------------------\n'),
+        print_time('Posting Constraints: '),
+        write('-------------------------\n'),
+    
         % matrix FFFVars to list FFFFVars
         flatten_list(FFFVars, FFFFVars),
         append(NNF, FFFFVars, FFFFFVars),
@@ -52,7 +57,8 @@ find_CF(1, FFFFFFVars) :-
         % solution search
         labeling([value(my_sel)], FFFFFVars),
         print_time('LabelingTime: '),
-        fd_statistics,
+        nl, fd_statistics,
+        write('-------------------------\n'),
 
         % take just the solved Close&Far to T
         split(R2, FFFFFVars, [_,T]),
@@ -89,16 +95,22 @@ find_CF(2, FFFFFVars) :-
     % contraints
     row_constraints(N, FVars, [], NF, R4),
     column_constraints(N, FVars, NF, NNF, R4),
-    print_time('PostingConstraints: '),
+
+    write('-----------\n'),
+    write('Statistics |\n'),
+    write('-------------------------\n'),
+    print_time('Posting Constraints: '),
+    write('-------------------------\n'),
 
     % matrix FVars to list FFVars
     flatten_list(FVars, FFVars),
     append(NNF, FFVars, FFFVars),
 
     % solution search
-    labeling([], FFFVars),
-    print_time('LabelingTime: '),
-    fd_statistics,
+    labeling([value(my_sel)], FFFVars),
+    print_time('Labeling Time: '),
+    nl, fd_statistics,
+    write('-------------------------\n'),
 
     % take just the solved Close&Far to T
     split(R2, FFFVars, [_,T]),
