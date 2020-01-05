@@ -16,9 +16,9 @@ closeOrFar :-
 find_CF(1, FFFFFFVars) :-
     (
         % display the given (unsolved) Close&Far
-        write('\nGIVEN Close&Far:\n'),
-        board_nine(Vars), % given Close&Far board, template at interface %
-        display_game(Vars),
+        write('\n GIVEN Close&Far:\n'),
+        board_eleven(Vars), % given Close&Far board, template at interface %
+        once(display_game(Vars)),
         replaceAll('C', 'F', ' ', 1, 2, ' ', Vars, FVars),
         maplist(make_vars, FVars, FFVars),
 
@@ -39,9 +39,11 @@ find_CF(1, FFFFFFVars) :-
         % list FFVars to matrix FFFVars
         divide(FFVars, N, FFFVars),
 
+        reset_timer,
         % contraints
         row_constraints(N, FFFVars, [], NF, R4),
         column_constraints(N, FFFVars, NF, NNF, R4),
+        print_time('PostingConstraints: '),
 
         % matrix FFFVars to list FFFFVars
         flatten_list(FFFVars, FFFFVars),
@@ -49,15 +51,17 @@ find_CF(1, FFFFFFVars) :-
 
         % solution search
         labeling([value(my_sel)], FFFFFVars),
+        print_time('LabelingTime: '),
+        fd_statistics,
 
         % take just the solved Close&Far to T
         split(R2, FFFFFVars, [_,T]),
         replaceAll(0, 1, 2, ' ', 'C', 'F', T, FFFFFFVars),
 
         % display the given (solved) Close&Far
-        write('\nSOLVED Close&Far:\n')
+        write('\n SOLVED Close&Far:\n')
         ;
-        write('\n* There\'s no solution for the given board. *')
+        write('\n * There\'s no solution for the given board. *')
     ).
 
 % generates a random board that complies with Close&Far constraints
@@ -81,29 +85,32 @@ find_CF(2, FFFFFVars) :-
     % list Vars to matrix FVars
     divide(Vars, N, FVars),
 
+    reset_timer,
     % contraints
     row_constraints(N, FVars, [], NF, R4),
     column_constraints(N, FVars, NF, NNF, R4),
+    print_time('PostingConstraints: '),
 
     % matrix FVars to list FFVars
     flatten_list(FVars, FFVars),
     append(NNF, FFVars, FFFVars),
 
     % solution search
-    labeling([value(my_sel)], FFFVars),
+    labeling([], FFFVars),
+    print_time('LabelingTime: '),
+    fd_statistics,
 
     % take just the solved Close&Far to T
     split(R2, FFFVars, [_,T]),
     replaceAll(0, 1, 2, ' ', 'C', 'F', T, FFFFVars),
 
     % display the generated (solved) Close&Far
-    write('\nSOLVED Close&Far:\n'),
+    write('\n SOLVED Close&Far:\n'),
     display_game(FFFFVars),
 
     % generate the respective unsolved Close&Far (randonmly)
-    I is round(L / 2),
-    unsolve(FFFFVars, _, FFFFFVars, L, I),
-    write('\nUNSOLVED Close&Far:\n').
+    unsolve(FFFFVars, _, FFFFFVars, L, R2),
+    write('\n UNSOLVED Close&Far:\n').
 
 % -------- Row Constraints -------- %
 

@@ -67,3 +67,9 @@ get_row([H|_], 1, H) :- !.
 get_row([_|T], Index, X) :-
   NIndex is Index - 1,
   get_row(T, NIndex, X).
+
+reset_timer :- statistics(total_runtime, _).
+print_time(Msg) :-
+  statistics(total_runtime, [_, T]),
+  TS is ((T//10) * 10) / 1000,
+  write(Msg), write(TS), write('s'), nl, nl.
